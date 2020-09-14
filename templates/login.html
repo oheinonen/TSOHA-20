@@ -5,15 +5,13 @@
   <p> Olet kirjautunut käyttäjällä {{ session.username }}</p>
   <a href="/logout">Kirjaudu ulos</a>
   {% else %}
-  Kirjaudu sisään
   <form class="" action="/login" method="post">
     <p>Tunnus: <br>
     <input type="text" name="username"></p>
     <p> Salasana <br>
       <input type="password" name="password"></p>
       <input type="submit" value="Kirjaudu">
-  </form>
 
-  <p>Uusi käyttäjä? <a href="/register"> Rekisteröidy täällä!</a> </p>
+  </form>
   {% endif %}
 {% endblock %}

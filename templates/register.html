@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+  Luo uusi käyttäjä
+  <form class="" action="/register" method="post">
+    <p>Tunnus: <br>
+    <input type="text" name="username"></p>
+    <p> Salasana: <br>
+      <input type="password" name="password"></p>
+      <input type="submit" value="Rekisteröidy!">
+
+  </form>
+
+  <p> Onko sinulla jo käyttäjä?
+  <a href="/login"> Kirjaudu sisään</a></p>
+{% endblock %}

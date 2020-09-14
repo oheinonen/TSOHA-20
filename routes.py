@@ -1,7 +1,8 @@
 from app import app
-import visits, users
 from flask import render_template, request, redirect
-
+from db import db
+import users
+ 
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -30,3 +31,8 @@ def login():
             return redirect("/")
         else:
             return render_template("error.html",message="Väärä tunnus tai salasana")
+
+@app.route("/logout")
+def logout():
+    del session["username"]
+    return redirect("/")

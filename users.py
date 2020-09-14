@@ -1,6 +1,5 @@
+from werkzeug.security import check_password_hash, generate_password_hash
 from db import db
-from app import app
-from werkzeug.security import generate_password_hash,check_password_hash
 from flask import session
 
 def register(username,password):
@@ -12,6 +11,7 @@ def register(username,password):
     except:
         return False
     return login(username,password)
+
 
 def login(username,password):
     sql = "SELECT password, id FROM users WHERE username=:username"
@@ -25,9 +25,13 @@ def login(username,password):
             return True
         else:
             return False
-
+            
 def logout():
     del session["user_id"]
 
+
 def user_id():
     return session.get("user_id",0)
+
+def logout():
+    del session["user_id"]
