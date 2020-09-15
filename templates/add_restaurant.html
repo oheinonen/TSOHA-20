@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+  Luo uusi ravintola
+  <form class="" action="/add/restaurant" method="post">
+    <p>Ravintolan nimi: <br>
+    <input type="text" name="name"></p>
+    <input type="submit" value="Lisää ravintola!">
+    <input type="hidden" name="id" value="{{ id }}">
+  </form>
+
+  <p>
+  <a href="/"> Palaa etusivulle</a></p>
+{% endblock %}

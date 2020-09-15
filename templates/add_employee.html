@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+  Lisää työntekijä ravintolalle
+  <form class="" action="/restaurant/<int:id>/add_employee" method="post">
+    <p>Työntekijän nimi: <br>
+    <input type="text" name="name"></p>
+    <p>Viikottaiset työtunnit: <br>
+    <input type="int" name="hours"></p>
+    <p>Työtehtävät: <br>
+    <input type="text" name="roles"></p>
+    <input type="submit" value="Lisää työntekijä!">
+    <input type="hidden" name="id" value="{{ id }}">
+    <input type="hidden" name="restaurantID" value="{{ id }}">
+  </form>
+
+  <p>
+  <a href="/"> Palaa etusivulle</a></p>
+{% endblock %}

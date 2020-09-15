@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+
+{% block body %}
+  {% if session.username %}
+    Ravintolan {{ name }} sivu
+    <a href="/restaurant/<int:id>/add_employee"></a>
+  {% else %}
+  <a href="/login">Kirjaudu sisään</a>
+  {% endif %}
+{% endblock %}
