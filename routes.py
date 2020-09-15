@@ -2,7 +2,7 @@ from app import app
 from flask import render_template, request, redirect
 from db import db
 import users
- 
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -34,5 +34,5 @@ def login():
 
 @app.route("/logout")
 def logout():
-    del session["username"]
+    users.logout()
     return redirect("/")
