@@ -9,3 +9,12 @@ def add_restaurant(name):
     except:
         return False
     return True
+
+def add_schedule(day_of_week,time_start, working_time, restaurantID):
+    try:
+        sql = "INSERT INTO schedules (day_of_week,time_start, working_time, restaurantID) VALUES (:day_of_week,:time_start, :working_time, :restaurantID)"
+        db.session.execute(sql, {"day_of_week":day_of_week, "time_start":time_start, "working_time":working_time, "restaurantID":restaurantID})
+        db.session.commit()
+    except:
+        return False
+    return True

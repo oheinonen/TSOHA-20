@@ -3,8 +3,20 @@
 {% block body %}
   {% if session.username %}
     Ravintolan {{ name }} sivu
-    <a href="/restaurant/<int:id>/add_employee"></a>
+    {% for day in workdays %}
+    <div class="">
+      Viikonpäivä {{ day[0] }}
+    </div>
+    <div class="">
+      Aloitusaika {{day[1].strftime("%H:%M")}}
+    </div>
+    <div class="">
+      Päivän kesto {{ day[2] }} tuntia
+    </div>
+    {% endfor %}
+
+    <a href="/">Palaa etusivulle</a>
   {% else %}
   <a href="/login">Kirjaudu sisään</a>
   {% endif %}
-{% endblock %}
+{% endblock %}}

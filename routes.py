@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, request, redirect
+from flask import render_template, request, redirect,session, url_for
 from db import db
 import users, restaurants
 
@@ -7,34 +7,45 @@ import users, restaurants
 def index():
     return render_template("index.html")
 
-# @app.route("/restaurant/<int:pk>/add_employee",methods=["GET","POST"])
-# def add_employee():
-#    if request.method == "GET":
-#        return render_template("add_employee.html" )
-#    if request.method == "POST":
-#        name = request.form["name"]
-#        max_hours = request.form["hours"]
-#        role = request.form["role"]
-#        restaurantID = request.form["restaurantID"]
-
 @app.route("/add/restaurant",methods=["GET","POST"])
 def add_restaurant():
     if request.method == "GET":
         return render_template("add_restaurant.html")
     if request.method == "POST":
-        id = request.form["id"]
         name = request.form["name"]
         if restaurants.add_restaurant(name):
-            return render_template("/restaurant.html", name=name, restaurantID=id)
+            sql = "SELECT id  FROM restaurants WHERE name=:name ORDER BY id DESC LIMIT 1"
+            result = db.session.execute(sql, {"name":name})
+            id = result.fetchone()[0]
+            return redirect(url_for('restaurant_add_schedule', restaurantID=id, day_of_week=1))
         else:
             return render_template("error.html", message = "Ravintolan lisäys epäonnistui")
+
+@app.route("/restaurant/<int:restaurantID>/add_schedule/<int:day_of_week>", methods= ["GET","POST"])
+def restaurant_add_schedule(restaurantID,day_of_week):
+    if request.method == "GET":
+        return render_template("add_schedule.html", restaurantID=restaurantID, day_of_week=day_of_week)
+    if request.method == "POST":
+        time_start = request.form["time_start"]
+        working_time = request.form["working_time"]
+        if restaurants.add_schedule(day_of_week,time_start, working_time, restaurantID):
+            if day_of_week == 7:
+                return redirect(url_for('restaurant', id=restaurantID))
+            else:
+                day_of_week_next = day_of_week + 1
+                return redirect(url_for('restaurant_add_schedule', restaurantID=restaurantID, day_of_week=day_of_week_next))
+        else:
+            return render_template("error.html", message = "Aikataulun lisäys epäonnistui")
 
 @app.route("/restaurant/<int:id>")
 def restaurant(id):
     sql = "SELECT name FROM restaurants WHERE id=:id"
     result = db.session.execute(sql, {"id":id})
     name = result.fetchone()[0]
-    return render_template("restaurant.html", id=id, name=name)
+    sql = "SELECT day_of_week,time_start,working_time FROM schedules WHERE restaurantID=" + str(id)
+    result = db.session.execute(sql)
+    workdays = result.fetchall()
+    return render_template("restaurant.html", id=id, name=name, workdays=workdays)
 
 
 @app.route("/register", methods=["GET","POST"])
