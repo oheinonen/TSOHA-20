@@ -17,3 +17,13 @@ CREATE TABLE schedules (
   time_start TIME,
   working_time INT
 );
+
+CREATE TABLE urgencyClasses (
+  id SERIAL PRIMARY KEY,
+  restaurantID INT REFERENCES restaurants(id),
+  bakers INT,
+  chefs INT,
+  waiters INT,
+  cashiers INT,
+  dishwashers INT
+);

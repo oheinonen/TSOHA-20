@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+  <p> Ilmoita kiireellisyysluokan {{ classNro }} henkilöstötarpeet </p>
+  <form class="" action="{{ url_for('restaurant_add_urgency_class', restaurantID=restaurantID, classNro=classNro) }}" method="post">
+    <div class="">
+      Leipuri: <input type="number" name="leipuri">
+    </div>
+    <div class="">
+      kokki: <input type="number" name="kokki">
+    </div>
+    <div class="">
+      Kassahenkilö: <input type="number" name="kassahenkilö">
+    </div>
+    <div class="">
+      Tarjoilija: <input type="number" name="tarjoilija">
+    </div>
+    <div class="">
+      Tiskari: <input type="number" name="tiskari">
+
+    </div>
+
+
+    <input type="submit" value="Lisää!">
+
+  </form>
+
+
+{% endblock %}

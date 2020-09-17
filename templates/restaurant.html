@@ -3,9 +3,10 @@
 {% block body %}
   {% if session.username %}
     Ravintolan {{ name }} sivu
+    Työpäivät:
     {% for day in workdays %}
     <div class="">
-      Viikonpäivä {{ day[0] }}
+      <b>Viikonpäivä {{ day[0] }} </b>
     </div>
     <div class="">
       Aloitusaika {{day[1].strftime("%H:%M")}}
@@ -14,7 +15,7 @@
       Päivän kesto {{ day[2] }} tuntia
     </div>
     {% endfor %}
-
+    <a href="{{url_for('restaurant_add_urgency_class', restaurantID=id, classNro=1)}}">Luo kiireysluokka ravintolalle</a>
     <a href="/">Palaa etusivulle</a>
   {% else %}
   <a href="/login">Kirjaudu sisään</a>

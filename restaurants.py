@@ -18,3 +18,13 @@ def add_schedule(day_of_week,time_start, working_time, restaurantID):
     except:
         return False
     return True
+
+def add_urgency_class(bakers,chefs,waiters, cashiers, dishwashers, restaurantID):
+    try:
+        sql = "INSERT INTO urgencyClasses (bakers,chefs,waiters, cashiers, dishwashers, restaurantID) VALUES (:bakers,:chefs,:waiters, :cashiers, :dishwashers, :restaurantID)"
+        db.session.execute(sql, {"bakers":bakers,"chefs":chefs,"waiters":waiters, "cashiers":cashiers, "dishwashers":dishwashers, "restaurantID": restaurantID})
+        db.session.commit()
+    except:
+        return False
+
+    return True
