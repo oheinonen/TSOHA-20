@@ -7,7 +7,7 @@ CREATE TABLE users (
 
 CREATE TABLE restaurants (
   id SERIAL PRIMARY KEY,
-  name TEXT,
+  name TEXT
 );
 
 CREATE TABLE schedules (
