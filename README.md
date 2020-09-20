@@ -9,6 +9,8 @@ Järjestelmä luo työvuorolistan, jossa tuntikohtaiset tarvittavat henkilövahv
 
 #### Tällä hetkellä käytössä olevat toiminnot
 
+[Sovellusta pääsee testaamaan täältä](https://tsoha-rostermaker.herokuapp.com)
+
 + Käyttäjä voi rekisteröityä sekä kirjautua sovellukseen
 + Käyttäjä voi luoda ravintolan ja sen aukioloajat
 + Käyttäjä voi luoda eri kiireysluokkia ravintolalleen
