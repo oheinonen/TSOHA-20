@@ -3,6 +3,7 @@
 __pycache__
 venv
 .pylintrcvenv
+.pylintrc
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

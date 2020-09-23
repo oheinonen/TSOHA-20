@@ -10,20 +10,12 @@ CREATE TABLE restaurants (
   name TEXT
 );
 
-CREATE TABLE schedules (
+CREATE TABLE shifts (
   id SERIAL PRIMARY KEY,
+  name TEXT,
   restaurantID INT REFERENCES restaurants(id),
-  day_of_week INT CHECK (day_of_week IN (1,2,3,4,5,6,7)),
-  time_start TIME,
-  working_time INT
-);
-
-CREATE TABLE urgencyClasses (
-  id SERIAL PRIMARY KEY,
-  restaurantID INT REFERENCES restaurants(id),
-  bakers INT,
-  chefs INT,
-  waiters INT,
-  cashiers INT,
-  dishwashers INT
+  role CHAR(20),
+  date DATE CHECK(date BETWEEN '2020-01-01' AND '2025-12-31'),
+  start_time TIME,
+  duration INT CHECK(duration BETWEEN 0 AND 24)
 );

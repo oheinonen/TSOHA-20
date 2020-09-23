@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+  Luo uusi työvuoro 
+  <form class="" action="#" method="post">
+      {{id}}
+    <p>Työvuoron nimi: <br>
+    <input type="text" name="name" required></p>
+    <p>
+        Valitse työvuoron tehtävä
+        <select name="role" id="role" required>
+            <option value="Leipuri">Leipuri</option>
+            <option value="Kokki">Kokki</option>
+            <option value="Tarjoilija">Tarjoilija</option>
+            <option value="Kassahenkilö">Kassahenkilö</option>
+            <option value="Tiskari">Tiskari</option>
+        </select>
+    </p>    
+    <p>
+        Työvuoron aloitusaika sekä päivä<br>
+        <input type="date" name="date" min="2020-01-01" max="2025-12-31" required>
+        <input type="time" name="start_time" required>
+    </p>
+    <p>
+        Työvuoron kesto tunneissa<br>
+        <input type="int" name="duration" min="0" max="24" required>
+    </p>
+
+    <input type="submit" value="Lisää työvuoro!">
+  </form>
+
+  <p>
+  <a href="/"> Palaa etusivulle</a></p>
+{% endblock %}

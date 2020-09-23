@@ -20,7 +20,7 @@ def add_restaurant():
             sql = "SELECT id  FROM restaurants WHERE name=:name ORDER BY id DESC LIMIT 1"
             result = db.session.execute(sql, {"name":name})
             id = result.fetchone()[0]
-            return redirect(url_for('restaurant_add_schedule', restaurantID=id, day_of_week=1))
+            return redirect(url_for("restaurant", id=id))
         else:
             return render_template("error.html", message = "Ravintolan lisäys epäonnistui")
 
@@ -29,42 +29,25 @@ def restaurant(id):
     sql = "SELECT name FROM restaurants WHERE id=:id"
     result = db.session.execute(sql, {"id":id})
     name = result.fetchone()[0]
-    sql = "SELECT day_of_week,time_start,working_time FROM schedules WHERE restaurantID=" + str(id)
+    sql = "SELECT name,date, start_time, duration FROM shifts WHERE restaurantID=" + str(id)
     result = db.session.execute(sql)
-    workdays = result.fetchall()
-    return render_template("restaurant.html", id=id, name=name, workdays=workdays)
+    shifts = result.fetchall()
+    return render_template("restaurant.html", id=id, name=name, shifts=shifts)
 
-@app.route("/restaurant/<int:restaurantID>/add_schedule/<int:day_of_week>", methods= ["GET","POST"])
-def restaurant_add_schedule(restaurantID,day_of_week):
+@app.route("/restaurant/<int:id>/add/shift",methods=["GET","POST"])
+def add_shift(id):
     if request.method == "GET":
-        return render_template("add_schedule.html", restaurantID=restaurantID, day_of_week=day_of_week)
+        return render_template("add_shift.html")
     if request.method == "POST":
-        time_start = request.form["time_start"]
-        working_time = request.form["working_time"]
-        if restaurants.add_schedule(day_of_week,time_start, working_time, restaurantID):
-            if day_of_week == 7:
-                return redirect(url_for('restaurant', id=restaurantID))
-            else:
-                day_of_week_next = day_of_week + 1
-                return redirect(url_for('restaurant_add_schedule', restaurantID=restaurantID, day_of_week=day_of_week_next))
+        name = request.form["name"]
+        role = request.form["role"]
+        date = request.form["date"]
+        start_time = request.form["start_time"]
+        duration = request.form["duration"]
+        if restaurants.add_shift(name, id, role,date, start_time, duration):
+            return redirect(url_for("restaurant", id=id))
         else:
-            return render_template("error.html", message = "Aikataulun lisäys epäonnistui")
-
-@app.route("/restaurant/<int:restaurantID>/add_urgency_class/<int:classNro>", methods= ["GET","POST"])
-def restaurant_add_urgency_class(restaurantID,classNro):
-    if request.method == "GET":
-        return render_template("add_urgency_class.html", restaurantID=restaurantID, classNro=classNro)
-    if request.method == "POST":
-        bakers = request.form["leipuri"]
-        chefs = request.form["kokki"]
-        waiters = request.form["tarjoilija"]
-        cashiers = request.form["kassahenkilö"]
-        dishwashers = request.form["tiskari"]
-        if restaurants.add_urgency_class(bakers,chefs,waiters,cashiers,dishwashers, restaurantID):
-            return redirect(url_for('restaurant', id=restaurantID))
-        else:
-            return render_template("error.html", message = "Kiireysluokan teko epäonnistui")
-
+            return render_template("error.html", message = "Työvuoron lisäys epäonnistui")
 
 @app.route("/register", methods=["GET","POST"])
 def register():

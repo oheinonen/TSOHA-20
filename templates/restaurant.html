@@ -2,21 +2,25 @@
 
 {% block body %}
   {% if session.username %}
+  <h1>
     Ravintolan {{ name }} sivu
-    Työpäivät:
-    {% for day in workdays %}
-    <div class="">
-      <b>Viikonpäivä {{ day[0] }} </b>
-    </div>
-    <div class="">
-      Aloitusaika {{day[1].strftime("%H:%M")}}
-    </div>
-    <div class="">
-      Päivän kesto {{ day[2] }} tuntia
-    </div>
+  </h1>
+  <div>
+    Lisätyt työvuorot:
+    {% for shift in shifts %}
+      <p>
+        {{shift[0]}}
+        Päivänä {{shift[1]}} klo {{shift[2].strftime("%H:%M")}}. Kesto {{shift[3]}} tuntia :D
+
+      </p>
     {% endfor %}
-    <a href="{{url_for('restaurant_add_urgency_class', restaurantID=id, classNro=1)}}">Luo kiireysluokka ravintolalle</a>
+  </div>
+  <p>
+    <a href="{{url_for('add_shift', id=id) }}" method="post">Lisää työvuoro ravintolalle</a>
+  </p>
+  <p>
     <a href="/">Palaa etusivulle</a>
+  </p>
   {% else %}
   <a href="/login">Kirjaudu sisään</a>
   {% endif %}

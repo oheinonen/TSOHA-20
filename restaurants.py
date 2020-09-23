@@ -10,21 +10,11 @@ def add_restaurant(name):
         return False
     return True
 
-def add_schedule(day_of_week,time_start, working_time, restaurantID):
+def add_shift(name, restaurantID, role, date, start_time, duration):
     try:
-        sql = "INSERT INTO schedules (day_of_week,time_start, working_time, restaurantID) VALUES (:day_of_week,:time_start, :working_time, :restaurantID)"
-        db.session.execute(sql, {"day_of_week":day_of_week, "time_start":time_start, "working_time":working_time, "restaurantID":restaurantID})
+        sql = "INSERT INTO shifts (name, restaurantID, role, date, start_time, duration) VALUES (:name, :restaurantID, :role, :date, :start_time, :duration)"
+        db.session.execute(sql, {"name":name, "restaurantID":restaurantID, "role":role, "date":date, "start_time":start_time, "duration":duration})
         db.session.commit()
     except:
         return False
-    return True
-
-def add_urgency_class(bakers,chefs,waiters, cashiers, dishwashers, restaurantID):
-    try:
-        sql = "INSERT INTO urgencyClasses (bakers,chefs,waiters, cashiers, dishwashers, restaurantID) VALUES (:bakers,:chefs,:waiters, :cashiers, :dishwashers, :restaurantID)"
-        db.session.execute(sql, {"bakers":bakers,"chefs":chefs,"waiters":waiters, "cashiers":cashiers, "dishwashers":dishwashers, "restaurantID": restaurantID})
-        db.session.commit()
-    except:
-        return False
-
     return True
