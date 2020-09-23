@@ -18,3 +18,12 @@ def add_shift(name, restaurantID, role, date, start_time, duration):
     except:
         return False
     return True
+
+def add_employee(firstname,lastname,restaurantID, role, max_hours):
+    try:
+        sql = "INSERT INTO employees (firstname,lastname,restaurantID, role, max_hours) VALUES (:firstname,:lastname,:restaurantID, :role, :max_hours)"
+        db.session.execute(sql, {"firstname":firstname,"lastname":lastname,"restaurantID":restaurantID, "role":role, "max_hours":max_hours})
+        db.session.commit()
+    except:
+        return False
+    return True

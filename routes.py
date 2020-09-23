@@ -5,6 +5,7 @@ import users, restaurants
 
 @app.route("/")
 def index():
+    # List all restaurants currently added to the website
     sql = "SELECT name,id FROM restaurants"
     result = db.session.execute(sql)
     restaurants = result.fetchall()
@@ -26,28 +27,59 @@ def add_restaurant():
 
 @app.route("/restaurant/<int:id>")
 def restaurant(id):
+
+    # Name of the restaurant
     sql = "SELECT name FROM restaurants WHERE id=:id"
     result = db.session.execute(sql, {"id":id})
     name = result.fetchone()[0]
+
+    # Shifts in this restaurant
     sql = "SELECT name,date, start_time, duration FROM shifts WHERE restaurantID=" + str(id)
     result = db.session.execute(sql)
     shifts = result.fetchall()
-    return render_template("restaurant.html", id=id, name=name, shifts=shifts)
 
-@app.route("/restaurant/<int:id>/add/shift",methods=["GET","POST"])
-def add_shift(id):
+    # Employees in this restaurant
+    sql = "SELECT firstname,lastname FROM employees WHERE restaurantID=" + str(id)
+    result = db.session.execute(sql)
+    employees = result.fetchall()
+
+    return render_template("restaurant.html", id=id, name=name, shifts=shifts, employees=employees)
+
+@app.route("/restaurant/add/shift",methods=["GET","POST"])
+def add_shift():
     if request.method == "GET":
-        return render_template("add_shift.html")
+        restaurantID = request.args.get("restaurantID")
+        return render_template("add_shift.html", restaurantID=restaurantID)
+
     if request.method == "POST":
         name = request.form["name"]
+        restaurantID = request.form["restaurantID"]
         role = request.form["role"]
         date = request.form["date"]
         start_time = request.form["start_time"]
         duration = request.form["duration"]
-        if restaurants.add_shift(name, id, role,date, start_time, duration):
-            return redirect(url_for("restaurant", id=id))
+        if restaurants.add_shift(name, restaurantID, role,date, start_time, duration):
+            return redirect(url_for("restaurant", id=restaurantID))
         else:
             return render_template("error.html", message = "Työvuoron lisäys epäonnistui")
+
+@app.route("/restaurant/add/employee",methods=["GET","POST"])
+def add_employee():
+    if request.method == "GET":
+        restaurantID = request.args.get("restaurantID")
+        return render_template("add_employee.html", restaurantID=restaurantID)
+
+    if request.method == "POST":
+        firstname = request.form["firstname"]
+        lastname = request.form["lastname"]        
+        restaurantID = request.form["restaurantID"]
+        role = request.form["role"]
+        max_hours = request.form["max_hours"]
+
+        if restaurants.add_employee(firstname,lastname,restaurantID, role, max_hours):
+            return redirect(url_for("restaurant", id=restaurantID))
+        else:
+            return render_template("error.html", message = "Työntekijän lisäys epäonnistui")
 
 @app.route("/register", methods=["GET","POST"])
 def register():

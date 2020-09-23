@@ -19,3 +19,12 @@ CREATE TABLE shifts (
   start_time TIME,
   duration INT CHECK(duration BETWEEN 0 AND 24)
 );
+
+CREATE TABLE employees (
+  id SERIAL PRIMARY KEY,
+  firstname TEXT,
+  lastname TEXT,
+  restaurantID INT REFERENCES restaurants(id),
+  role CHAR(20),
+  max_hours INT CHECK(max_hours BETWEEN 0 AND 100)
+);

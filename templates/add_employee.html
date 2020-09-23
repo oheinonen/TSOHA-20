@@ -1,14 +1,17 @@
 {% extends "layout.html" %}
 
 {% block body %}
+ 
+  Luo uusi työntekijä 
+  <form class="" action="/restaurant/add/employee" method="post">
 
-  Luo uusi työvuoro 
-  <form class="" action="/restaurant/add/shift" method="post">
-
-    <p>Työvuoron nimi: <br>
-    <input type="text" name="name" required></p>
+    <p>Etunimi: <br>
+        <input type="text" name="firstname" required></p>
     <p>
-        Valitse työvuoron tehtävä
+    <p>Sukunimi: <br>
+        <input type="text" name="lastname" required></p>
+    <p>
+        Valitse työntekijän rooli
         <select name="role" id="role" required>
             <option value="Leipuri">Leipuri</option>
             <option value="Kokki">Kokki</option>
@@ -18,16 +21,11 @@
         </select>
     </p>    
     <p>
-        Työvuoron aloitusaika sekä päivä<br>
-        <input type="date" name="date" min="2020-01-01" max="2025-12-31" required>
-        <input type="time" name="start_time" required>
-    </p>
-    <p>
-        Työvuoron kesto tunneissa<br>
-        <input type="number" name="duration" min="0" max="24" required>
+        Työntekijän maksimitunnit viikkoa kohden<br>
+        <input type="number" name="max_hours" min="0" max="100" required>
     </p>
     <input type="hidden" name="restaurantID" value={{restaurantID}}>
-    <input type="submit" value="Lisää työvuoro!">
+    <input type="submit" value="Lisää työntekijä!">
   </form>
 
   <p>
