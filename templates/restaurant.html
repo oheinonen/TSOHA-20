@@ -6,6 +6,9 @@
   <h1>
     Ravintolan {{ name }} sivu
   </h1>
+  <p>
+    <a class="links" href="{{url_for('remove_restaurant', id=id) }}"> Poista tämä ravintola</a>
+  </p>
   <div>
     <p>Katso haluamasi päivän työvuorot täältä</p>
     <form action="dayview" method="get">
@@ -22,6 +25,9 @@
           Päivänä {{shift[1]}} klo {{shift[2].strftime("%H:%M")}}. Kesto {{shift[3]}} tuntia :D
 
         </p>
+        <p>
+          <a class="links" href="{{url_for('remove_shift', id=shift[4])}}"> Poista tämä työvuoro</a>
+        </p>
       {% endfor %}
 
   </div>
@@ -31,6 +37,9 @@
     {% for employee in employees %}
       <p>
         {{employee[1]}},{{employee[0]}}
+      </p>
+      <p>
+        <a class="links" href="{{url_for('remove_employee', id=employee[2]) }}"> Poista tämä työntekijä</a>
       </p>
     {% endfor %}
   </div>

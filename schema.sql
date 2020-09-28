@@ -7,7 +7,8 @@ CREATE TABLE users (
 
 CREATE TABLE restaurants (
   id SERIAL PRIMARY KEY,
-  name TEXT
+  name TEXT UNIQUE,
+  visible INT DEFAULT 1 CHECK(visible IN (0,1))
 );
 
 CREATE TABLE shifts (
@@ -18,7 +19,8 @@ CREATE TABLE shifts (
   role CHAR(20),
   date DATE CHECK(date BETWEEN '2020-01-01' AND '2025-12-31'),
   start_time TIME,
-  duration INT CHECK(duration BETWEEN 0 AND 24)
+  duration INT CHECK(duration BETWEEN 0 AND 24),
+  visible INT DEFAULT 1 CHECK(visible IN (0,1))
 );
 
 CREATE TABLE employees (
@@ -27,5 +29,6 @@ CREATE TABLE employees (
   lastname TEXT,
   restaurantID INT REFERENCES restaurants(id),
   role CHAR(20),
-  max_hours INT CHECK(max_hours BETWEEN 0 AND 100)
+  max_hours INT CHECK(max_hours BETWEEN 0 AND 100),
+  visible INT DEFAULT 1 CHECK(visible IN (0,1))
 );

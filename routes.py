@@ -40,6 +40,20 @@ def add_restaurant():
         else:
             return render_template("error.html", message = "Ravintolan lisäys epäonnistui")
 
+@app.route("/remove/restaurant", methods=["GET", "POST"])
+def remove_restaurant():
+    if request.method == "GET":
+        id = request.args.get("id")
+        name = restaurants.get_name(id)
+        return render_template("remove_restaurant.html", id=id, name=name)
+    if request.method == "POST":
+        id = request.form["id"]
+        if restaurants.remove_restaurant(id):
+            # Lisää message / parempi route vielä
+            return redirect("/")
+        else:
+            return render_template("error.html", message = "Ravintolan poisto epäonnistui")
+
 @app.route("/restaurant/add/shift",methods=["GET","POST"])
 def add_shift():
     if request.method == "GET":
@@ -60,6 +74,21 @@ def add_shift():
         else:
             return render_template("error.html", message = "Työvuoron lisäys epäonnistui")
 
+@app.route("/remove/shift", methods=["GET", "POST"])
+def remove_shift():
+    if request.method == "GET":
+        id = request.args.get("id")
+        name = restaurants.get_shift_name(id)
+        date = restaurants.get_shift_date(id)
+        return render_template("remove_shift.html", id=id, name=name, date=date)
+    if request.method == "POST":
+        id = request.form["id"]
+        if restaurants.remove_shift(id):
+            # Lisää message / parempi route vielä
+            return redirect("/")
+        else:
+            return render_template("error.html", message = "Työvuoron poisto epäonnistui")
+
 @app.route("/restaurant/add/employee",methods=["GET","POST"])
 def add_employee():
     if request.method == "GET":
@@ -78,6 +107,20 @@ def add_employee():
         else:
             return render_template("error.html", message = "Työntekijän lisäys epäonnistui")
 
+@app.route("/remove/employee", methods=["GET", "POST"])
+def remove_employee():
+    if request.method == "GET":
+        id = request.args.get("id")
+        firstname = restaurants.get_employee_firstname(id)
+        lastname = restaurants.get_employee_lastname(id)
+        return render_template("remove_employee.html",firstname=firstname,lastname=lastname, id=id)
+    if request.method == "POST":
+        id = request.form["id"]
+        if restaurants.remove_employee(id):
+            # Lisää message / parempi route vielä
+            return redirect("/")
+        else:
+            return render_template("error.html", message = "Työntekijän poisto epäonnistui")
 
 # Register/login/logout 
 

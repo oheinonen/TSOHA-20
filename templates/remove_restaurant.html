@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block title %}Poista ravintola{% endblock %}
+
+{% block body %}
+{% if session.username %}
+  Halutako varmasti poistaa ravintolan {{ name }}?
+  <form class="" action="/remove/restaurant" method="post">
+
+    <input type="hidden" name="id" value={{id}}>
+    <input type="submit" value="Poista!">
+  </form>
+
+  <a class="links" href="/">Peruuta</a>
+{% else %}
+  
+  <p>Et ole kirjautunut sisään.</p>
+  <a href="/login">Kirjaudu sisään täältä!</a>
+
+{% endif %}
+{% endblock %}

@@ -11,14 +11,23 @@ def add_restaurant(name):
         return False
     return True
 
+def remove_restaurant(id):
+    try:
+        sql = "UPDATE restaurants SET visible=0 WHERE id=:id"
+        db.session.execute(sql,{"id":id})
+        db.session.commit()
+    except:
+        return False
+    return True
+
 def get_name(id):
-    sql = "SELECT name FROM restaurants WHERE id=:id"
+    sql = "SELECT name FROM restaurants WHERE id=:id AND visible=1"
     result = db.session.execute(sql, {"id":id})
     name = result.fetchone()[0]
     return name
 
 def get_all():
-    sql = "SELECT name,id FROM restaurants"
+    sql = "SELECT name,id FROM restaurants WHERE visible=1"
     result = db.session.execute(sql)
     restaurants = result.fetchall()
     return restaurants
@@ -52,15 +61,36 @@ def add_shift(name, restaurantID, role, date, start_time, duration, reps, repeti
         return False
     return True
 
-def get_shifts(id):
-    sql = "SELECT name,date, start_time, duration FROM shifts WHERE restaurantID=:id"
+def remove_shift(id):
+    try:
+        sql = "UPDATE shifts SET visible=0 WHERE id=:id"
+        db.session.execute(sql,{"id":id})
+        db.session.commit()
+    except:
+        return False
+    return True
+
+def get_shift_name(id):
+    sql = "SELECT date FROM shifts WHERE id=:id"
     result = db.session.execute(sql, {"id":id})
+    name = result.fetchone()[0]
+    return name
+
+def get_shift_date(id):
+    sql = "SELECT name FROM shifts WHERE id=:id"
+    result = db.session.execute(sql, {"id":id})
+    date = result.fetchone()[0]
+    return date
+
+def get_shifts(restaurantID):
+    sql = "SELECT name,date, start_time, duration,id FROM shifts WHERE restaurantID=:restaurantID AND visible=1"
+    result = db.session.execute(sql, {"restaurantID":restaurantID})
     shifts = result.fetchall()
     return shifts
 
-def get_shifts_by_date(id,date): 
-    sql = "SELECT name, role, start_time, duration FROM shifts WHERE date=:date AND restaurantID=:id"
-    result = db.session.execute(sql, {"date":date, "id":id})
+def get_shifts_by_date(restaurantID,date): 
+    sql = "SELECT name, role, start_time, duration,id FROM shifts WHERE date=:date AND restaurantID=:restaurantID AND visible=1"
+    result = db.session.execute(sql, {"date":date, "restaurantID":restaurantID})
     shifts = result.fetchall()
     return shifts
 
@@ -75,9 +105,31 @@ def add_employee(firstname,lastname,restaurantID, role, max_hours):
         return False
     return True
 
+def remove_employee(id):
+    try:
+        sql = "UPDATE employees SET visible=0 WHERE id=:id"
+        db.session.execute(sql,{"id":id})
+        db.session.commit()
+    except:
+        return False
+    return True
+
+
+def get_employee_firstname(id):
+    sql = "SELECT firstname FROM employees WHERE id=:id"
+    result = db.session.execute(sql, {"id":id})
+    firstname = result.fetchone()[0]
+    return firstname
+
+def get_employee_lastname(id):
+    sql = "SELECT lastname FROM employees WHERE id=:id"
+    result = db.session.execute(sql, {"id":id})
+    lastname = result.fetchone()[0]
+    return lastname
+
 def get_employees(id):
-    sql = "SELECT firstname,lastname FROM employees WHERE restaurantID=" + str(id)
-    result = db.session.execute(sql)
+    sql = "SELECT firstname,lastname,id FROM employees WHERE restaurantID=:id AND visible=1"
+    result = db.session.execute(sql, {"id":id})
     employees = result.fetchall()
     return employees
 
