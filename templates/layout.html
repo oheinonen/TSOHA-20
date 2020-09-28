@@ -1,15 +1,30 @@
 <!DOCTYPE html>
+<link rel="stylesheet" href="{{ url_for('static', filename='main.css')}}">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Työvuorolista sovellus</title>
+    <title>Työvuorolistasovellus - {% block title %}{% endblock %}</title>
+  </title>
   </head>
 
   <body>
-    {% block body %}
-      <p>
-        Sisältö tulee tähän
-      </p>
-    {% endblock %}
+    <div class="header">
+      <h1>Työvuorolistasovellus</h1>
+    </div>
+    
+    <nav>
+      <ul>
+        <li><a href="/">Etusivu</a></li>
+        <li><a href="/login">Kirjautuminen</a></li>
+        <li><a href="/register">Rekisteröinti</a></li>
+      </ul>
+    </nav>
+    <div class="content">
+      {% block body %}
+
+      {% endblock %}
+    </div>
   </body>
 </html>

@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% block title %}{{ name }}{% endblock %}
 
 {% block body %}
   {% if session.username %}
@@ -14,14 +15,15 @@
     </form>
   </div> 
   <div>
-    Lisätyt työvuorot:
-    {% for shift in shifts %}
-      <p>
-        {{shift[0]}}
-        Päivänä {{shift[1]}} klo {{shift[2].strftime("%H:%M")}}. Kesto {{shift[3]}} tuntia :D
+      Lisätyt työvuorot:
+      {% for shift in shifts %}
+        <p>
+          {{shift[0]}}
+          Päivänä {{shift[1]}} klo {{shift[2].strftime("%H:%M")}}. Kesto {{shift[3]}} tuntia :D
 
-      </p>
-    {% endfor %}
+        </p>
+      {% endfor %}
+
   </div>
 
   <div>
@@ -33,18 +35,16 @@
     {% endfor %}
   </div>
   <p>
-    <a href="{{url_for('add_shift', restaurantID=id) }}" method="post">Lisää työvuoro ravintolalle</a>
+    <a class="links" href="{{url_for('add_shift', restaurantID=id) }}" method="post">Lisää työvuoro ravintolalle</a>
   </p>
   <p>
-    <a href="{{url_for('add_employee', restaurantID=id) }}" method="post">Lisää työntekijä ravintolalle</a>
+    <a class="links" href="{{url_for('add_employee', restaurantID=id) }}" method="post">Lisää työntekijä ravintolalle</a>
   </p>
-  <p>
-    <a href="/">Palaa etusivulle</a>
-  </p>
+
   {% else %}
   
     <p>Et ole kirjautunut sisään.</p>
-    <a href="/login">Kirjaudu sisään täältä!</a>
+    <a class="links" href="/login">Kirjaudu sisään täältä!</a>
 
   {% endif %}
 {% endblock %}}

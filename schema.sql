@@ -14,6 +14,7 @@ CREATE TABLE shifts (
   id SERIAL PRIMARY KEY,
   name TEXT,
   restaurantID INT REFERENCES restaurants(id),
+  employeeID INT REFERENCES employees(id),
   role CHAR(20),
   date DATE CHECK(date BETWEEN '2020-01-01' AND '2025-12-31'),
   start_time TIME,

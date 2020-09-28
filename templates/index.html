@@ -1,20 +1,21 @@
 {% extends "layout.html" %}
+{% block title %}Etusivu{% endblock %}
 
 {% block body %}
   {% if session.username %}
   <p> Olet kirjautunut käyttäjällä {{ session.username }}</p>
-  <a href="/add/restaurant"> Lisää uusi ravintola tästä!</a>
+  <a class="links" href="/add/restaurant"> Lisää uusi ravintola tästä!</a>
   {% for restaurant in restaurants %}
   <div class="">
-    <a href="{{url_for('restaurant', id=restaurant[1])}}">Siirry ravintolan {{ restaurant[0] }} sivulle</a>
+    <a class="links" href="{{url_for('restaurant', id=restaurant[1])}}">Siirry ravintolan {{ restaurant[0] }} sivulle</a>
   </div>
   {% endfor %}
-  <a href="/logout">Kirjaudu ulos</a>
+  <a class="links" href="/logout">Kirjaudu ulos</a>
 
   {% else %}
   
   Kirjaudu sisään
-  <form class="" action="/login" method="post">
+  <form class="loginform" action="/login" method="post">
     <p>Tunnus: <br>
     <input type="text" name="username"></p>
     <p> Salasana <br>
@@ -22,6 +23,6 @@
       <input type="submit" value="Kirjaudu">
   </form>
 
-  <p>Uusi käyttäjä? <a href="/register"> Rekisteröidy täällä!</a> </p>
+  <p>Uusi käyttäjä? <a class="links" href="/register"> Rekisteröidy täällä!</a> </p>
   {% endif %}
 {% endblock %}

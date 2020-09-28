@@ -1,15 +1,21 @@
 {% extends "layout.html" %}
+{% block title %}Päivänäkymä{% endblock %}
 
 {% block body %}
   {% if session.username %}
-  
-    Ravintolan {{ name }} päivän {{ date }} työvuorot:
 
-    {% for shift in shifts %}
-        <h3>{{shift[0]}}</h3>
-        <p>Rooli {{ shift[1]}}</p> 
-        <p>klo {{shift[2].strftime("%H:%M")}}. Kesto {{shift[3]}} tuntia</p>
-    {% endfor %}
+    {% if shifts %}
+      Ravintolan {{ name }} päivän {{ date }} työvuorot:
+
+      {% for shift in shifts %}
+          <h3>{{shift[0]}}</h3>
+          <p>Rooli {{ shift[1]}}</p> 
+          <p>klo {{shift[2].strftime("%H:%M")}}. Kesto {{shift[3]}} tuntia</p>
+      {% endfor %}
+    
+    {% else %}
+        <p>Tälle päivälle ei ole lisätty yhtään vuoroa</p>
+    {% endif %}
 
   {% else %}
   

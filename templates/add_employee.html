@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% block title %}Lisää työntekijä{% endblock %}
 
 {% block body %}
     {% if session.username %}
@@ -28,12 +29,10 @@
             <input type="submit" value="Lisää työntekijä!">
         </form>
 
-        <p>
-        <a href="/"> Palaa etusivulle</a></p>
-    {{% else %}
+    {% else %}
   
     <p>Et ole kirjautunut sisään.</p>
-    <a href="/login">Kirjaudu sisään täältä!</a>
+    <a  class="links" href="/login">Kirjaudu sisään täältä!</a>
 
     {% endif %}
 {% endblock %}
