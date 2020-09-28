@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block body %}
+  {% if session.user_id %}
+  
+    Ravintolan {{ name }} päivän {{ date }} työvuorot:
+
+    {% for shift in shifts %}
+        <h3>{{shift[0]}}</h3>
+        <p>Rooli {{ shift[1]}}</p> 
+        <p>klo {{shift[2].strftime("%H:%M")}}. Kesto {{shift[3]}} tuntia</p>
+    {% endfor %}
+
+  {% else %}
+  
+    <p>Et ole kirjautunut sisään.</p>
+    <a href="/login">Kirjaudu sisään täältä!</a>
+
+  {% endif %}
+{% endblock %}

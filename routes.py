@@ -6,10 +6,27 @@ import users, restaurants
 @app.route("/")
 def index():
     # List all restaurants currently added to the website
-    sql = "SELECT name,id FROM restaurants"
-    result = db.session.execute(sql)
-    restaurants = result.fetchall()
-    return render_template("index.html", restaurants=restaurants)
+    all_restaurants = restaurants.get_all()
+    return render_template("index.html", restaurants=all_restaurants)
+
+@app.route("/restaurant/<int:id>")
+def restaurant(id):
+    name = restaurants.get_name(id)
+    shifts = restaurants.get_shifts(id)
+    employees = restaurants.get_employees(id)
+    return render_template("restaurant.html", id=id, name=name, shifts=shifts, employees=employees)
+
+@app.route("/restaurant/dayview")
+def restaurant_dayview():
+    id = request.args["id"]
+    date = request.args["date"]
+    name = restaurants.get_name(id)
+    shifts = restaurants.get_shifts_by_date(id,date)
+    return render_template('restaurant_dayview.html', shifts=shifts, name=name, date=date)
+
+
+
+# Routes for forms
 
 @app.route("/add/restaurant",methods=["GET","POST"])
 def add_restaurant():
@@ -18,32 +35,10 @@ def add_restaurant():
     if request.method == "POST":
         name = request.form["name"]
         if restaurants.add_restaurant(name):
-            sql = "SELECT id  FROM restaurants WHERE name=:name ORDER BY id DESC LIMIT 1"
-            result = db.session.execute(sql, {"name":name})
-            id = result.fetchone()[0]
+            id = restaurants.get_last_by_name(name)
             return redirect(url_for("restaurant", id=id))
         else:
             return render_template("error.html", message = "Ravintolan lisäys epäonnistui")
-
-@app.route("/restaurant/<int:id>")
-def restaurant(id):
-
-    # Name of the restaurant
-    sql = "SELECT name FROM restaurants WHERE id=:id"
-    result = db.session.execute(sql, {"id":id})
-    name = result.fetchone()[0]
-
-    # Shifts in this restaurant
-    sql = "SELECT name,date, start_time, duration FROM shifts WHERE restaurantID=" + str(id)
-    result = db.session.execute(sql)
-    shifts = result.fetchall()
-
-    # Employees in this restaurant
-    sql = "SELECT firstname,lastname FROM employees WHERE restaurantID=" + str(id)
-    result = db.session.execute(sql)
-    employees = result.fetchall()
-
-    return render_template("restaurant.html", id=id, name=name, shifts=shifts, employees=employees)
 
 @app.route("/restaurant/add/shift",methods=["GET","POST"])
 def add_shift():
@@ -80,6 +75,9 @@ def add_employee():
             return redirect(url_for("restaurant", id=restaurantID))
         else:
             return render_template("error.html", message = "Työntekijän lisäys epäonnistui")
+
+
+# Register/login/logout 
 
 @app.route("/register", methods=["GET","POST"])
 def register():
