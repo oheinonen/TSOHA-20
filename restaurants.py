@@ -1,5 +1,6 @@
 from db import db
 from flask import session
+from datetime import datetime, timedelta
 
 def add_restaurant(name):
     try:
@@ -27,26 +28,39 @@ def get_last_by_name(name):
     result = db.session.execute(sql, {"name":name})
     id = result.fetchone()[0]
     return id
+    
 # Functions related to shifts in this restaurant
 
-def add_shift(name, restaurantID, role, date, start_time, duration):
+def add_shift(name, restaurantID, role, date, start_time, duration, reps, repetition):
     try:
-        sql = "INSERT INTO shifts (name, restaurantID, role, date, start_time, duration) VALUES (:name, :restaurantID, :role, :date, :start_time, :duration)"
-        db.session.execute(sql, {"name":name, "restaurantID":restaurantID, "role":role, "date":date, "start_time":start_time, "duration":duration})
-        db.session.commit()
+        date_to_add = date
+        for i in range(int(reps)+1):
+            if str(repetition) == "daily":
+                for j in range(8):
+                    sql = "INSERT INTO shifts (name, restaurantID, role, date, start_time, duration) VALUES (:name, :restaurantID, :role, :date, :start_time, :duration)"
+                    db.session.execute(sql, {"name":name, "restaurantID":restaurantID, "role":role, "date":date_to_add, "start_time":start_time, "duration":duration})
+                    db.session.commit()
+                    modified_date = datetime.strptime(date_to_add, "%Y-%m-%d") + timedelta(days=1)
+                    date_to_add = modified_date.strftime( "%Y-%m-%d")
+            else:
+                sql = "INSERT INTO shifts (name, restaurantID, role, date, start_time, duration) VALUES (:name, :restaurantID, :role, :date, :start_time, :duration)"
+                db.session.execute(sql, {"name":name, "restaurantID":restaurantID, "role":role, "date":date_to_add, "start_time":start_time, "duration":duration})
+                db.session.commit()
+                modified_date = datetime.strptime(date_to_add, "%Y-%m-%d") + timedelta(days=7)
+                date_to_add = modified_date.strftime( "%Y-%m-%d")
     except:
         return False
     return True
 
 def get_shifts(id):
-    sql = "SELECT name,date, start_time, duration FROM shifts WHERE restaurantID=" + str(id)
-    result = db.session.execute(sql)
+    sql = "SELECT name,date, start_time, duration FROM shifts WHERE restaurantID=:id"
+    result = db.session.execute(sql, {"id":id})
     shifts = result.fetchall()
     return shifts
 
 def get_shifts_by_date(id,date): 
-    sql = "SELECT name, role, start_time, duration FROM shifts WHERE date='" + str(date) + "' AND restaurantID=" + str(id)
-    result = db.session.execute(sql)
+    sql = "SELECT name, role, start_time, duration FROM shifts WHERE date=:date AND restaurantID=:id"
+    result = db.session.execute(sql, {"date":date, "id":id})
     shifts = result.fetchall()
     return shifts
 

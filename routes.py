@@ -53,7 +53,9 @@ def add_shift():
         date = request.form["date"]
         start_time = request.form["start_time"]
         duration = request.form["duration"]
-        if restaurants.add_shift(name, restaurantID, role,date, start_time, duration):
+        reps = request.form["reps"]
+        repetition = request.form["repetition"]
+        if restaurants.add_shift(name, restaurantID, role, date, start_time, duration, reps,repetition):
             return redirect(url_for("restaurant", id=restaurantID))
         else:
             return render_template("error.html", message = "Työvuoron lisäys epäonnistui")

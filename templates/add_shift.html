@@ -27,6 +27,16 @@
         Työvuoron kesto tunneissa<br>
         <input type="number" name="duration" min="0" max="24" required>
     </p>
+    <p>
+      Vuoron viikottainen toistuvuus (max neljä viikkoa) <br>
+      <input type="number" name="reps" min="0" max="4" required>
+    </p>
+    <p>
+      <select name="repetition" id="repetition" required>
+          <option value="weekly">Kerran viikossa</option>
+          <option value="daily">Joka päivä</option>
+      </select>
+  </p>    
     <input type="hidden" name="restaurantID" value={{restaurantID}}>
     <input type="submit" value="Lisää työvuoro!">
   </form>
