@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block body %}
-
+{% if session.username %}
   Luo uusi työvuoro 
   <form class="" action="/restaurant/add/shift" method="post">
 
@@ -32,4 +32,11 @@
 
   <p>
   <a href="/"> Palaa etusivulle</a></p>
+  
+{% else %}
+  
+  <p>Et ole kirjautunut sisään.</p>
+  <a href="/login">Kirjaudu sisään täältä!</a>
+
+{% endif %}
 {% endblock %}

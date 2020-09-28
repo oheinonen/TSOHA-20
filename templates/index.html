@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block body %}
-  {% if session.user_id %}
+  {% if session.username %}
   <p> Olet kirjautunut käyttäjällä {{ session.username }}</p>
   <a href="/add/restaurant"> Lisää uusi ravintola tästä!</a>
   {% for restaurant in restaurants %}
