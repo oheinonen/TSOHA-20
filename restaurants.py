@@ -115,6 +115,13 @@ def get_shifts_by_date(restaurantID,date):
     shifts = result.fetchall()
     return shifts
 
+def get_shifts_by_date_and_role(restaurantID,date,role): 
+    sql = "SELECT * FROM shifts WHERE date=:date AND restaurantID=:restaurantID AND role=:role AND visible=1"
+    result = db.session.execute(sql, {"date":date, "restaurantID":restaurantID, "role":role})
+    shifts = result.fetchall()
+    return shifts
+
+
 # Functions related to employees in this restaurant
 
 def add_employee(firstname,lastname,restaurantID, role, max_hours):
@@ -145,10 +152,10 @@ def remove_employee(id):
     return True
 
 
-# Returns list where
+# Functions below return list where
 # employee[0] = id
-# employee[1] = first name
-# employee[2] = last name
+# employee[1] = firstname
+# employee[2] = lastname
 # employee[3] = restaurantID
 # employee[4] = role
 # employee[5] = max_hours
@@ -193,3 +200,27 @@ def get_employees(id):
     dishwashers = result.fetchall()
     return (employees, bakers, chefs, waiters, cashiers, dishwashers)
 
+
+# Functions related to making staff strength calendar
+
+# returns list where ith element is list of needed staff for each role in the ith day of the week. the roles are in order
+# 1. bakers, 2. chefs, 3. waiters, 4. cashiers, 5. dishwashers
+# therefore calendar[1][3] shows how many cashiers are needed on Tuesday
+def create_staff_strength_calendar(week,restaurantID):
+    calendar = [[]]*7
+    date = datetime.strptime(week + '-1', "%Y-W%W-%w").strftime( "%Y-%m-%d")
+    
+    for i in range(7):
+        bakers =        len(get_shifts_by_date_and_role(restaurantID,date,'Leipuri'))
+        chefs =         len(get_shifts_by_date_and_role(restaurantID,date,'Kokki'))
+        waiters =       len(get_shifts_by_date_and_role(restaurantID,date,'Tarjoilija'))
+        cashiers =      len(get_shifts_by_date_and_role(restaurantID,date,'Kassahenkilö'))
+        dishwashers =   len(get_shifts_by_date_and_role(restaurantID,date,'Tiskari'))
+        
+
+        calendar[i] = [bakers, chefs, waiters, cashiers, dishwashers]
+        modified_date = datetime.strptime(date, "%Y-%m-%d") + timedelta(days=1)
+        date = modified_date.strftime( "%Y-%m-%d")
+    
+    return calendar
+     

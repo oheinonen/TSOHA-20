@@ -24,7 +24,13 @@ def restaurant_dayview():
     shifts = restaurants.get_shifts_by_date(id,date)
     return render_template('restaurant_dayview.html', id=id, shifts=shifts, name=name, date=date)
 
-
+@app.route("/restaurant/staff_strength_calendar")
+def restaurant_staff_strength_calendar():
+    week = request.args["week"]
+    restaurantID = request.args["restaurantID"]
+    calendar = restaurants.create_staff_strength_calendar(week,restaurantID)
+    name = restaurants.get_name(restaurantID)
+    return render_template("restaurant_staff_strength_calendar.html", calendar=calendar, week=week, name=name)
 
 # Routes for forms
 

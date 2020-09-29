@@ -17,6 +17,16 @@
   </div> 
 
   <div>
+    <p>Katso haluamasi viikon henkilöstövahvuuskalenteri</p>
+    <form action="staff_strength_calendar" method="GET">
+      <input type="week" name="week">
+      <input type="hidden" name="restaurantID" value={{id}}>
+      <input type="submit" value="siirry">
+    </form>
+
+  </div>
+
+  <div>
     <h2>Ravintolan työntekijät:</h2>
 
       {% for i in range(1,6) %}
