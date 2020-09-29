@@ -8,14 +8,29 @@
       Ravintolan {{ name }} päivän {{ date }} työvuorot:
 
       {% for shift in shifts %}
-          <h3>{{shift[0]}}</h3>
-          <p>Rooli {{ shift[1]}}</p> 
-          <p>klo {{shift[2].strftime("%H:%M")}}. Kesto {{shift[3]}} tuntia</p>
+          <h3>{{shift[1]}}</h3>
+          <p>Rooli {{ shift[3]}}</p> 
+          <p>klo {{shift[5].strftime("%H:%M")}}. Kesto {{shift[6]}} tuntia</p>
+          <p>
+            <a class="links" href="{{url_for('update_shift', id=shift[0])}}"> Muokkaa tätä työvuoroa</a>
+          </p>
+          <p>
+            <a class="links" href="{{url_for('remove_shift', id=shift[0])}}"> Poista tämä työvuoro</a>
+          </p>
       {% endfor %}
     
     {% else %}
         <p>Tälle päivälle ei ole lisätty yhtään vuoroa</p>
     {% endif %}
+
+    <div>
+      <p>Katso toisen päivän työvuorot täältä</p>
+      <form action="dayview" method="get">
+        <input type="date" name="date" min="2020-01-01" max="2025-12-31" required>
+        <input type="hidden" name="id" value={{id}}>
+        <input type="submit" value="siirry">
+      </form>
+    </div> 
 
   {% else %}
   

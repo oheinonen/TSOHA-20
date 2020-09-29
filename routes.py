@@ -22,7 +22,7 @@ def restaurant_dayview():
     date = request.args["date"]
     name = restaurants.get_name(id)
     shifts = restaurants.get_shifts_by_date(id,date)
-    return render_template('restaurant_dayview.html', shifts=shifts, name=name, date=date)
+    return render_template('restaurant_dayview.html', id=id, shifts=shifts, name=name, date=date)
 
 
 
@@ -39,6 +39,22 @@ def add_restaurant():
             return redirect(url_for("restaurant", id=id))
         else:
             return render_template("error.html", message = "Ravintolan lisäys epäonnistui")
+
+@app.route("/update/restaurant", methods=["GET","POST"])
+def update_restaurant():
+    if request.method == "GET":
+        id = request.args.get("id")
+        name = restaurants.get_name(id)
+        return render_template("update_restaurant.html", id=id, name=name)
+    if request.method == "POST":
+        id = request.form["id"]
+        new_name = request.form["new_name"]
+        if restaurants.update_restaurant(id, new_name):
+            # Lisää message / parempi route vielä
+            return redirect(url_for('restaurant', id=id))
+        else:
+            return render_template("error.html", message = "Ravintolan muokkaus epäonnistui")
+
 
 @app.route("/remove/restaurant", methods=["GET", "POST"])
 def remove_restaurant():
@@ -74,12 +90,47 @@ def add_shift():
         else:
             return render_template("error.html", message = "Työvuoron lisäys epäonnistui")
 
+
+@app.route("/update/shift", methods=["GET","POST"])
+def update_shift():
+    if request.method == "GET":
+        id = request.args.get("id")
+        shift = restaurants.get_shift(id)
+        name = shift[1]
+        restaurantID = shift[2]
+        role = shift[3]
+        date = shift[4]
+        start_time = shift[5]
+        duration = shift[6]
+        return render_template("update_shift.html", id=id,
+                                                    name=name, 
+                                                    restaurantID=restaurantID,
+                                                    role=role,
+                                                    date=date,
+                                                    start_time=start_time,
+                                                    duration=duration )
+
+    if request.method == "POST":
+        id = request.form["id"]
+        new_name = request.form["new_name"]
+        new_role = request.form["new_role"]
+        new_date = request.form["new_date"]
+        new_start_time = request.form["new_start_time"]
+        new_duration = request.form["new_duration"]
+        restaurantID = request.form["restaurantID"]
+        if restaurants.update_shift(id, new_name, new_role, new_date, new_start_time, new_duration):
+            # Lisää message / parempi route vielä
+            return redirect(url_for('restaurant', id=restaurantID))
+        else:
+            return render_template("error.html", message = "Työvuoron muokkaus epäonnistui")
+
 @app.route("/remove/shift", methods=["GET", "POST"])
 def remove_shift():
     if request.method == "GET":
         id = request.args.get("id")
-        name = restaurants.get_shift_name(id)
-        date = restaurants.get_shift_date(id)
+        shift = restaurants.get_shift(id)
+        name = shift[1]
+        date = shift[4]
         return render_template("remove_shift.html", id=id, name=name, date=date)
     if request.method == "POST":
         id = request.form["id"]
@@ -107,12 +158,34 @@ def add_employee():
         else:
             return render_template("error.html", message = "Työntekijän lisäys epäonnistui")
 
+
+@app.route("/update/employee", methods=["GET","POST"])
+def update_employee():
+    if request.method == "GET":
+        id = request.args.get("id")
+        employee = restaurants.get_employee(id)
+        return render_template("update_shift.html", employee=employee)
+
+    if request.method == "POST":
+        id = request.form["id"]
+        new_firstname = request.form["new_firstname"]
+        new_lastname = request.form["new_lastname"]
+        new_role = request.form["new_role"]
+        new_max_hours = request.form["new_max_hours"]
+        restaurantID = request.form["restaurantID"]
+        if restaurants.update_employee(id, new_firstname, new_lastname, new_role, new_max_hours):
+            # Lisää message / parempi route vielä
+            return redirect(url_for('restaurant', id=restaurantID))
+        else:
+            return render_template("error.html", message = "Työntekijän muokkaus epäonnistui")
+
 @app.route("/remove/employee", methods=["GET", "POST"])
 def remove_employee():
     if request.method == "GET":
         id = request.args.get("id")
-        firstname = restaurants.get_employee_firstname(id)
-        lastname = restaurants.get_employee_lastname(id)
+        employee = restaurants.get_employee(id)
+        firstname = employee[1]
+        lastname = employee[2]
         return render_template("remove_employee.html",firstname=firstname,lastname=lastname, id=id)
     if request.method == "POST":
         id = request.form["id"]

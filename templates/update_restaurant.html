@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block title %}Muokkaa ravintolaa{% endblock %}
+
+{% block body %}
+{% if session.username %}
+  <h3>Muokkaa ravintolaa {{name}}</h3>
+  <form class="" action="/update/restaurant" method="post">
+    <p>Ravintolan uusi nimi: <br>
+    <input type="text" name="new_name" value="{{name}}" required></p>
+
+    <input type="hidden" name="id" value={{id}}>
+    <input type="submit" value="Muokkaa!">
+  </form>
+
+  <a class="links" href="/">Peruuta</a>
+
+{% else %}
+
+  <p>Et ole kirjautunut sisään.</p>
+  <a href="/login">Kirjaudu sisään täältä!</a>
+
+{% endif %}
+{% endblock %}
