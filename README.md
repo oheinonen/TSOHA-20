@@ -5,7 +5,7 @@ Sovelluksen tarkoituksena on toimia työkaluna, jolla luodaan työvuorolista rav
 
 Kullakin työntekijällä on tietty maksimiviikkotuntimäärä, jota enempää tunteja järjestelmä ei saa työntekijälle antaa. Lisäksi työntekijälle voidaan merkitä lomapäiviä, joihin järjestelmä ei saa antaa kyseiselle työntekijälle työvuoroja. 
 
-Järjestelmä luo työvuoroista henkilöstövahvuuskalenterin, joka näyttää tarvittavien työntekijöiden määrän luokittain eri kellonaikoina ja päivinä. Järjestelmä luo annetuista työvuorosta sekä ravintolan työntekijöistä työvuorolistan, jossa jokainen ravintolan työvuoro asetetaan jollekin työntekijälle ja jossa kenenkään työntekijän viikkotunnit eivät ylity ja lomapäivät säilyvät. 
+Järjestelmä luo työvuoroista henkilöstövahvuuskalenterin, joka näyttää tarvittavien työntekijöiden määrän luokittain eri päivinä. Järjestelmä luo annetuista työvuorosta sekä ravintolan työntekijöistä työvuorolistan, jossa jokainen ravintolan työvuoro asetetaan jollekin työntekijälle ja jossa kenenkään työntekijän viikkotunnit eivät ylity ja lomapäivät säilyvät. 
 
 #### Tällä hetkellä käytössä olevat toiminnot
 
@@ -23,7 +23,7 @@ Järjestelmä luo työvuoroista henkilöstövahvuuskalenterin, joka näyttää t
 + Kirjautuminen
 + Työntekijöiden lisääminen, muokkaaminen ja poistaminen
 + Työvuorojen lisääminen, muokkaaminen ja poistaminen
-+ Henkilöstövahvuuskalenterin teko (ja muutos)
++ Henkilöstövahvuuskalenterin teko
 + Työvuorolistan teko (ja muutos)
 + Henkilökohtaisen työvuorolistan listaus
 + Työvuorolistan listaus
