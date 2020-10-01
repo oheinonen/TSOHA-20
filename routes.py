@@ -25,12 +25,21 @@ def restaurant_dayview():
     return render_template('restaurant_dayview.html', id=id, shifts=shifts, name=name, date=date)
 
 @app.route("/restaurant/staff_strength_calendar")
-def restaurant_staff_strength_calendar():
+def staff_strength_calendar():
     week = request.args["week"]
     restaurantID = request.args["restaurantID"]
     calendar = restaurants.create_staff_strength_calendar(week,restaurantID)
     name = restaurants.get_name(restaurantID)
-    return render_template("restaurant_staff_strength_calendar.html", calendar=calendar, week=week, name=name)
+    return render_template("staff_strength_calendar.html", calendar=calendar, week=week, name=name)
+
+@app.route("/restaurant/roster")
+def roster():
+    week = request.args["week"]
+    restaurantID = request.args["restaurantID"]
+    roster = restaurants.create_roster(week,restaurantID)
+    #name = restaurants.get_name(restaurantID)
+    return render_template("roster.html", roster=roster, week=week)
+
 
 # Routes for forms
 
@@ -169,8 +178,9 @@ def add_employee():
 def update_employee():
     if request.method == "GET":
         id = request.args.get("id")
+        restaurantID = request.args.get("id")
         employee = restaurants.get_employee(id)
-        return render_template("update_shift.html", employee=employee)
+        return render_template("update_employee.html", employee=employee, restaurantID=restaurantID)
 
     if request.method == "POST":
         id = request.form["id"]
@@ -181,7 +191,7 @@ def update_employee():
         restaurantID = request.form["restaurantID"]
         if restaurants.update_employee(id, new_firstname, new_lastname, new_role, new_max_hours):
             # Lisää message / parempi route vielä
-            return redirect(url_for('restaurant', id=restaurantID))
+            return redirect("/")
         else:
             return render_template("error.html", message = "Työntekijän muokkaus epäonnistui")
 

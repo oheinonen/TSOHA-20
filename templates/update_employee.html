@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+{% block title %}Muokkaa työntekijää{% endblock %}
+
+{% block body %}
+{% if session.username %}
+  <h3>Muokkaa työntekijän {{employee.lastname}} {{employee.firstname}} tietoja </h3> 
+
+  <form class="" action="/update/employee" method="post">
+
+    <p>Työntekijän etunimi: <br>
+        <input type="text" name="new_firstname" value="{{employee.firstname}}" required></p>
+    <p>
+    <p>Työntekijän sukunimi: <br>
+        <input type="text" name="new_lastname" value="{{employee.lastname}}" required></p>
+    <p>
+        Valitse työntekijän rooli
+        <select name="new_role" id="role" required>
+            <option value="Leipuri">Leipuri</option>
+            <option value="Kokki">Kokki</option>
+            <option value="Tarjoilija">Tarjoilija</option>
+            <option value="Kassahenkilö">Kassahenkilö</option>
+            <option value="Tiskari">Tiskari</option>
+        </select>
+    </p>    
+
+    <p>
+        Työntekijän maksimitunnit viikkoa kohden<br>
+        <input type="number" name="new_max_hours" min="0" max="100"  value="{{ employee.max_hours }}" required>
+    </p>
+
+    <input type="hidden" name="restaurantID" value="{{employee.restaurantID}}">
+    <input type="hidden" name="id" value="{{employee.id}}">
+    <input type="submit" value="Muokkaa!">
+  </form>
+
+{% else %}
+  
+  <p>Et ole kirjautunut sisään.</p>
+  <a href="/login">Kirjaudu sisään täältä!</a>
+
+{% endif %}
+{% endblock %}

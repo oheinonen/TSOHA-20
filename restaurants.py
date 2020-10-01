@@ -1,6 +1,7 @@
 from db import db
 from flask import session
 from datetime import datetime, timedelta
+import random
 
 def add_restaurant(name):
     try:
@@ -88,6 +89,21 @@ def remove_shift(id):
         return False
     return True
 
+def employee_has_shift(date,employeeID):
+    sql = "SELECT * FROM shifts WHERE employeeID=:employeeID AND date=:date"
+    result = db.session.execute(sql, {"employeeID":employeeID, "date":date})
+    shift = result.fetchone()[0]
+    return True if shift else False 
+
+def add_employee_to_shift(shiftID,employeeID):
+    try:
+        sql = "UPDATE shifts SET employeeID=:employeeID WHERE id=:shiftID"
+        db.session.execute( sql, {"employeeID":employeeID, "shiftID":shiftID})
+        db.session.commit()
+    except:
+        return False
+    return True
+
 # Functions below return list where
 # shift[0] = id
 # shift[1] = name
@@ -115,6 +131,15 @@ def get_shifts_by_date(restaurantID,date):
     shifts = result.fetchall()
     return shifts
 
+def get_shifts_by_employee_and_week(restaurantID,employeeID,week): 
+    start_date = datetime.strptime(week + '-1', "%Y-W%W-%w").strftime( "%Y-%m-%d")
+    modified_date = datetime.strptime(start_date, "%Y-%m-%d") + timedelta(days=7)
+    end_date = modified_date.strftime( "%Y-%m-%d")
+    sql = "SELECT * FROM shifts WHERE employeeID=:employeeID AND restaurantID=:restaurantID AND visible=1 AND date BETWEEN :start_date AND :end_date"
+    result = db.session.execute(sql, {"employeeID":employeeID, "restaurantID":restaurantID, "start_date":start_date, "end_date":end_date})
+    shifts = result.fetchall()
+    return shifts
+
 def get_shifts_by_date_and_role(restaurantID,date,role): 
     sql = "SELECT * FROM shifts WHERE date=:date AND restaurantID=:restaurantID AND role=:role AND visible=1"
     result = db.session.execute(sql, {"date":date, "restaurantID":restaurantID, "role":role})
@@ -135,8 +160,8 @@ def add_employee(firstname,lastname,restaurantID, role, max_hours):
 
 def update_employee(id,firstname,lastname, role, max_hours):
     try:
-        sql = "UPDATE employees SET(firstname=:firstname,lastname=:lastname, role=:role, max_hours=:max_hours) WHERE id=:id"
-        db.session.execute(sql, {"firstname":firstname,"lastname":lastname, "role":role, "max_hours":max_hours})
+        sql = "UPDATE employees SET firstname=:firstname, lastname=:lastname, role=:role, max_hours=:max_hours  WHERE id=:id"
+        db.session.execute(sql, {"firstname":firstname,"lastname":lastname, "role":role, "max_hours":max_hours,"id":id})
         db.session.commit()
     except:
         return False
@@ -165,6 +190,11 @@ def get_employee(id):
     employee = result.fetchone()
     return employee
 
+def get_employees_by_role(id,role):
+    sql = "SELECT * FROM employees WHERE restaurantID=:id AND visible=1 AND role=:role"
+    result = db.session.execute(sql, {"id":id, "role":role})
+    employees = result.fetchall()
+    return employees
 
 # Returns employees in this restaurant in a tuple where:
 # 1st element: all employees
@@ -174,41 +204,25 @@ def get_employee(id):
 # 5th element: all cashiers
 # 6th element: all dishwashers
 def get_employees(id):
-    # All employees
     sql = "SELECT * FROM employees WHERE restaurantID=:id AND visible=1"
     result = db.session.execute(sql, {"id":id})
     employees = result.fetchall()
-    # bakers
-    sql = "SELECT * FROM employees WHERE restaurantID=:id AND visible=1 AND role='Leipuri'"
-    result = db.session.execute(sql, {"id":id})
-    bakers = result.fetchall()
-    # chefs
-    sql = "SELECT * FROM employees WHERE restaurantID=:id AND visible=1 AND role='Kokki'"
-    result = db.session.execute(sql, {"id":id})
-    chefs = result.fetchall()
-    # waiters
-    sql = "SELECT * FROM employees WHERE restaurantID=:id AND visible=1 AND role='Tarjoilija'"
-    result = db.session.execute(sql, {"id":id})
-    waiters = result.fetchall()
-    # cashiers
-    sql = "SELECT * FROM employees WHERE restaurantID=:id AND visible=1 AND role='Kassahenkilö'"
-    result = db.session.execute(sql, {"id":id})
-    cashiers = result.fetchall()
-    # dishwashers
-    sql = "SELECT * FROM employees WHERE restaurantID=:id AND visible=1 AND role='Tiskari'"
-    result = db.session.execute(sql, {"id":id})
-    dishwashers = result.fetchall()
+    bakers = get_employees_by_role(id,'Leipuri')
+    chefs = get_employees_by_role(id,'Kokki')
+    waiters = get_employees_by_role(id,'Tarjoilija')
+    cashiers = get_employees_by_role(id,'Kassahenkilö')
+    dishwashers = get_employees_by_role(id,'Tiskari')
     return (employees, bakers, chefs, waiters, cashiers, dishwashers)
 
 
-# Functions related to making staff strength calendar
+# Functions related to making staff strength calendar and the roster
 
 # returns list where ith element is list of needed staff for each role in the ith day of the week. the roles are in order
 # 1. bakers, 2. chefs, 3. waiters, 4. cashiers, 5. dishwashers
 # therefore calendar[1][3] shows how many cashiers are needed on Tuesday
 def create_staff_strength_calendar(week,restaurantID):
     calendar = [[]]*7
-    date = datetime.strptime(week + '-1', "%Y-W%W-%w").strftime( "%Y-%m-%d")
+    date = datetime.strptime(week + '-1', "%G-W%V-%u").strftime( "%Y-%m-%d")
     
     for i in range(7):
         bakers =        len(get_shifts_by_date_and_role(restaurantID,date,'Leipuri'))
@@ -216,11 +230,44 @@ def create_staff_strength_calendar(week,restaurantID):
         waiters =       len(get_shifts_by_date_and_role(restaurantID,date,'Tarjoilija'))
         cashiers =      len(get_shifts_by_date_and_role(restaurantID,date,'Kassahenkilö'))
         dishwashers =   len(get_shifts_by_date_and_role(restaurantID,date,'Tiskari'))
-        
-
         calendar[i] = [bakers, chefs, waiters, cashiers, dishwashers]
         modified_date = datetime.strptime(date, "%Y-%m-%d") + timedelta(days=1)
         date = modified_date.strftime( "%Y-%m-%d")
     
     return calendar
+     
+# returns a list where ith element is list of shifts on ith day of the week. The shifts are assigned to employees.
+def create_roster(week,restaurantID):
+    date = datetime.strptime(week + '-1', "%G-W%V-%u").strftime( "%Y-%m-%d")
+    roster = [[]]*7
+    for i in range(7):
+        shifts = get_shifts_by_date(restaurantID,date)
+        this_day_shifts = []
+        for shift in shifts:
+
+             # employees are shuffled to create randomness in picking employee
+            employees = get_employees_by_role(restaurantID,shift.role)
+            employees = random.sample(employees, len(employees))
+            for employee in employees:
+                has_shift = False
+                current_shifts = get_shifts_by_employee_and_week(employee.id,restaurantID,week)
+                hours = 0
+                for current_shift in current_shifts:
+                    # Check if employee already has shift this day
+                    if employee_has_shift(employee.id, current_shift.date):
+                        has_shift = True
+                    else:
+                        hours += int(current_shift.duration)
+                        print(hours)
+
+                if hours + shift.duration <= employee.max_hours and not has_shift:
+                    if add_employee_to_shift(shift.id,employee.id):
+                        this_day_shifts.append((shift,employee))
+                        break
+
+        roster[i] = this_day_shifts
+        modified_date = datetime.strptime(date, "%Y-%m-%d") + timedelta(days=1)
+        date = modified_date.strftime( "%Y-%m-%d")
+    
+    return roster
      

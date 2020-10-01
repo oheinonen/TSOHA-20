@@ -26,6 +26,17 @@
 
   </div>
 
+
+  <div>
+    <p>Tee työvuorolista valitsemallesi viikolle</p>
+    <form action="roster" method="GET">
+      <input type="week" name="week">
+      <input type="hidden" name="restaurantID" value={{id}}>
+      <input type="submit" value="siirry">
+    </form>
+
+  </div>
+
   <div>
     <h2>Ravintolan työntekijät:</h2>
 
@@ -45,10 +56,13 @@
       <div>
         {% for employee in employees[i] %}
           <p>
-            {{employee[2]}},{{employee[1]}}
+            {{employee.lastname}},{{employee.firstname}}
           </p>
           <p>
-            <a class="links" href="{{url_for('remove_employee', id=employee[0]) }}"> Poista tämä työntekijä</a>
+            <a class="links" href="{{url_for('update_employee', id=employee.id)}}"> Muokkaa työntekijän tietoja</a>
+          </p>
+          <p>
+            <a class="links" href="{{url_for('remove_employee', id=employee.id) }}"> Poista tämä työntekijä</a>
           </p>
         {% endfor %}
         </div>
