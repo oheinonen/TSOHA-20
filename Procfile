@@ -1,1 +1,1 @@
-web: gunicorn app:appfrom application import app
+web: gunicorn app:app
