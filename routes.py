@@ -7,8 +7,9 @@ import users, restaurants
 def index():
     # List all restaurants currently added to the website
     all_restaurants = []
-    user = session["user_id"]
-    all_restaurants = restaurants.get_all(user)
+    if session:
+        user = session["user_id"]
+        all_restaurants = restaurants.get_all(user)
     return render_template("index.html", all_restaurants=all_restaurants)
 
 
