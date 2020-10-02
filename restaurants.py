@@ -105,15 +105,6 @@ def add_employee_to_shift(shiftID,employeeID):
         return False
     return True
 
-# Functions below return list where
-# shift[0] = id
-# shift[1] = name
-# shift[2] = restaurantID
-# shift[3] = role
-# shift[4] = date
-# shift[5] = start_time
-# shift[6] = duration
-# shift[7] = employeeID
 def get_shift(id):
     sql = "SELECT * FROM shifts WHERE id=:id"
     result = db.session.execute(sql, {"id":id})
@@ -177,14 +168,6 @@ def remove_employee(id):
         return False
     return True
 
-
-# Functions below return list where
-# employee[0] = id
-# employee[1] = firstname
-# employee[2] = lastname
-# employee[3] = restaurantID
-# employee[4] = role
-# employee[5] = max_hours
 def get_employee(id):
     sql = "SELECT * FROM employees WHERE id=:id"
     result = db.session.execute(sql, {"id":id})
