@@ -2,9 +2,18 @@
 {% block title %}Muokkaa ravintolaa{% endblock %}
 
 {% block body %}
+<script>
+  function check(form){
+    if(form.name.value.length > 50) {
+      alert("Nimi on liian pitkä!");
+      return false;
+    }
+    return true;
+  }
+</script>
 {% if session.username %}
   <h3>Muokkaa ravintolaa {{name}}</h3>
-  <form class="" action="/update/restaurant" method="post">
+  <form class="" action="/update/restaurant" method="post" onsubmit="return check(this)">
     <p>Ravintolan uusi nimi: <br>
     <input type="text" name="new_name" value="{{name}}" required></p>
 

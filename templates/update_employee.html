@@ -2,10 +2,25 @@
 {% block title %}Muokkaa työntekijää{% endblock %}
 
 {% block body %}
+
+<script>
+  function check(form){
+    if(form.firstname.value.length > 50) {
+      alert("Etunimi on liian pitkä!");
+      return false;
+    }
+    if(form.lastname.value.length > 50) {
+      alert("Sukunimi on liian pitkä!");
+      return false;
+    }
+    return true;
+  }
+</script>
+
 {% if session.username %}
   <h3>Muokkaa työntekijän {{employee.lastname}} {{employee.firstname}} tietoja </h3> 
 
-  <form class="" action="/update/employee" method="post">
+  <form class="" action="/update/employee" method="post" onsubmit="return check(this)">
 
     <p>Työntekijän etunimi: <br>
         <input type="text" name="new_firstname" value="{{employee.firstname}}" required></p>

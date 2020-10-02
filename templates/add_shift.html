@@ -2,9 +2,18 @@
 {% block title %}Lisää työvuoro{% endblock %}
 
 {% block body %}
+<script>
+  function check(form){
+    if(form.name.value.length > 50) {
+      alert("Nimi on liian pitkä!");
+      return false;
+    }
+    return true;
+  }
+</script>
 {% if session.username %}
   Luo uusi työvuoro 
-  <form class="" action="/restaurant/add/shift" method="post">
+  <form class="" action="/restaurant/add/shift" method="post" onsubmit="return check(this)">
 
     <p>Työvuoron nimi: <br>
     <input type="text" name="name" required></p>
@@ -28,7 +37,7 @@
         <input type="number" name="duration" min="0" max="24" required>
     </p>
     <p>
-      Vuoron viikottainen toistuvuus (max neljä viikkoa) <br>
+      Kuinka monelle viikolle haluat asettaa vuoron? (0-4viikkoa) <br>
       <input type="number" name="reps" min="0" max="4" required>
     </p>
     <p>

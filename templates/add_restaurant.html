@@ -2,9 +2,19 @@
 {% block title %}Lisää ravintola{% endblock %}
 
 {% block body %}
+<script>
+  function check(form){
+    if(form.name.value.length > 50) {
+      alert("Nimi on liian pitkä!");
+      return false;
+    }
+    return true;
+  }
+</script>
+
 {% if session.username %}
   Luo uusi ravintola
-  <form class="" action="/add/restaurant" method="post">
+  <form class="" action="/add/restaurant" method="post" onsubmit="return check(this)">
     <p>Ravintolan nimi: <br>
     <input type="text" name="name" required></p>
 

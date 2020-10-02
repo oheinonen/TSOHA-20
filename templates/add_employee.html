@@ -2,9 +2,24 @@
 {% block title %}Lisää työntekijä{% endblock %}
 
 {% block body %}
+
+<script>
+    function check(form){
+      if(form.firstname.value.length > 50) {
+        alert("Etunimi on liian pitkä!");
+        return false;
+      }
+      if(form.lastname.value.length > 50) {
+        alert("Sukunimi on liian pitkä!");
+        return false;
+      }
+      return true;
+    }
+</script>
+
     {% if session.username %}
         Luo uusi työntekijä 
-        <form class="" action="/restaurant/add/employee" method="post">
+        <form class="" action="/restaurant/add/employee" method="post" onsubmit="return check(this)">
 
             <p>Etunimi: <br>
                 <input type="text" name="firstname" required></p>
