@@ -3,8 +3,9 @@
 
 {% block body %}
   {% if session.username %}
+  {% if session.user_id == restaurant.owner%}
 
-    <h2>Ravintolan {{ name }} viikon {{ week }} henkilöstövahvuuskalenteri</h2>
+    <h2>Ravintolan {{ restaurant.name }} viikon {{ week }} henkilöstövahvuuskalenteri</h2>
 
     <table>
         <tr>
@@ -70,6 +71,11 @@
         </tr>
     </table>
 
+    {% else %}
+  
+        <p>Voit katsoa vain oman ravintolasi työvuorolistoja.</p>
+    
+    {% endif %}
 
   {% else %}
   

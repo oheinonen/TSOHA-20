@@ -6,39 +6,42 @@ import users, restaurants
 @app.route("/")
 def index():
     # List all restaurants currently added to the website
-    all_restaurants = restaurants.get_all()
-    return render_template("index.html", restaurants=all_restaurants)
+    all_restaurants = []
+    user = session["user_id"]
+    all_restaurants = restaurants.get_all(user)
+    return render_template("index.html", all_restaurants=all_restaurants)
+
 
 @app.route("/restaurant/<int:id>")
 def restaurant(id):
-    name = restaurants.get_name(id)
+    restaurant = restaurants.get_restaurant(id)
     shifts = restaurants.get_shifts(id)
     employees = restaurants.get_employees(id)
-    return render_template("restaurant.html", id=id, name=name, shifts=shifts, employees=employees)
+    return render_template("restaurant.html", restaurant=restaurant, shifts=shifts, employees=employees)
 
 @app.route("/restaurant/dayview")
 def restaurant_dayview():
     id = request.args["id"]
     date = request.args["date"]
-    name = restaurants.get_name(id)
+    restaurant = restaurants.get_restaurant(id)
     shifts = restaurants.get_shifts_by_date(id,date)
-    return render_template('restaurant_dayview.html', id=id, shifts=shifts, name=name, date=date)
+    return render_template('restaurant_dayview.html', restaurant=restaurant, shifts=shifts, date=date)
 
 @app.route("/restaurant/staff_strength_calendar")
 def staff_strength_calendar():
     week = request.args["week"]
     restaurantID = request.args["restaurantID"]
     calendar = restaurants.create_staff_strength_calendar(week,restaurantID)
-    name = restaurants.get_name(restaurantID)
-    return render_template("staff_strength_calendar.html", calendar=calendar, week=week, name=name)
+    restaurant = restaurants.get_restaurant(restaurantID)
+    return render_template("staff_strength_calendar.html", calendar=calendar, week=week, restaurant=restaurant)
 
 @app.route("/restaurant/roster")
 def roster():
     week = request.args["week"]
     restaurantID = request.args["restaurantID"]
-    roster = restaurants.create_roster(week,restaurantID)
-    #name = restaurants.get_name(restaurantID)
-    return render_template("roster.html", roster=roster, week=week)
+    restaurant = restaurants.get_restaurant(restaurantID)
+    roster = restaurants.create_roster(week,restaurant.id)
+    return render_template("roster.html", roster=roster, week=week, restaurant=restaurant)
 
 
 # Routes for forms
@@ -49,7 +52,8 @@ def add_restaurant():
         return render_template("add_restaurant.html")
     if request.method == "POST":
         name = request.form["name"]
-        if restaurants.add_restaurant(name):
+        owner = request.form["owner"]
+        if restaurants.add_restaurant(name,owner):
             id = restaurants.get_last_by_name(name)
             return redirect(url_for("restaurant", id=id))
         else:
@@ -58,9 +62,9 @@ def add_restaurant():
 @app.route("/update/restaurant", methods=["GET","POST"])
 def update_restaurant():
     if request.method == "GET":
-        id = request.args.get("id")
-        name = restaurants.get_name(id)
-        return render_template("update_restaurant.html", id=id, name=name)
+        restaurantID = request.args["restaurantID"]
+        restaurant = restaurants.get_restaurant(restaurantID)
+        return render_template("update_restaurant.html", restaurant=restaurant)
     if request.method == "POST":
         id = request.form["id"]
         new_name = request.form["new_name"]
@@ -74,9 +78,9 @@ def update_restaurant():
 @app.route("/remove/restaurant", methods=["GET", "POST"])
 def remove_restaurant():
     if request.method == "GET":
-        id = request.args.get("id")
-        name = restaurants.get_name(id)
-        return render_template("remove_restaurant.html", id=id, name=name)
+        restaurantID = request.args["restaurantID"]
+        restaurant = restaurants.get_restaurant(restaurantID)
+        return render_template("remove_restaurant.html", id=id, restaurant=restaurant)
     if request.method == "POST":
         id = request.form["id"]
         if restaurants.remove_restaurant(id):
@@ -88,8 +92,9 @@ def remove_restaurant():
 @app.route("/restaurant/add/shift",methods=["GET","POST"])
 def add_shift():
     if request.method == "GET":
-        restaurantID = request.args.get("restaurantID")
-        return render_template("add_shift.html", restaurantID=restaurantID)
+        restaurantID = request.args["restaurantID"]
+        restaurant = restaurants.get_restaurant(restaurantID)
+        return render_template("add_shift.html", restaurant=restaurant)
 
     if request.method == "POST":
         name = request.form["name"]
@@ -110,20 +115,10 @@ def add_shift():
 def update_shift():
     if request.method == "GET":
         id = request.args.get("id")
+        restaurantID = request.args["restaurantID"]
+        restaurant = restaurants.get_restaurant(restaurantID)
         shift = restaurants.get_shift(id)
-        name = shift[1]
-        restaurantID = shift[2]
-        role = shift[3]
-        date = shift[4]
-        start_time = shift[5]
-        duration = shift[6]
-        return render_template("update_shift.html", id=id,
-                                                    name=name, 
-                                                    restaurantID=restaurantID,
-                                                    role=role,
-                                                    date=date,
-                                                    start_time=start_time,
-                                                    duration=duration )
+        return render_template("update_shift.html", shift=shift, restaurant=restaurant )
 
     if request.method == "POST":
         id = request.form["id"]
@@ -144,9 +139,9 @@ def remove_shift():
     if request.method == "GET":
         id = request.args.get("id")
         shift = restaurants.get_shift(id)
-        name = shift[1]
-        date = shift[4]
-        return render_template("remove_shift.html", id=id, name=name, date=date)
+        restaurantID = request.args["restaurantID"]
+        restaurant = restaurants.get_restaurant(restaurantID)
+        return render_template("remove_shift.html", id=id, shift=shift, restaurant=restaurant)
     if request.method == "POST":
         id = request.form["id"]
         if restaurants.remove_shift(id):
@@ -158,8 +153,9 @@ def remove_shift():
 @app.route("/restaurant/add/employee",methods=["GET","POST"])
 def add_employee():
     if request.method == "GET":
-        restaurantID = request.args.get("restaurantID")
-        return render_template("add_employee.html", restaurantID=restaurantID)
+        restaurantID = request.args["restaurantID"]
+        restaurant = restaurants.get_restaurant(restaurantID)
+        return render_template("add_employee.html", restaurant=restaurant)
 
     if request.method == "POST":
         firstname = request.form["firstname"]
@@ -178,9 +174,10 @@ def add_employee():
 def update_employee():
     if request.method == "GET":
         id = request.args.get("id")
-        restaurantID = request.args.get("id")
+        restaurantID = request.args["restaurantID"]
+        restaurant = restaurants.get_restaurant(restaurantID)
         employee = restaurants.get_employee(id)
-        return render_template("update_employee.html", employee=employee, restaurantID=restaurantID)
+        return render_template("update_employee.html", employee=employee, restaurant=restaurant)
 
     if request.method == "POST":
         id = request.form["id"]
@@ -199,10 +196,10 @@ def update_employee():
 def remove_employee():
     if request.method == "GET":
         id = request.args.get("id")
+        restaurantID = request.args["restaurantID"]
+        restaurant = restaurants.get_restaurant(restaurantID)
         employee = restaurants.get_employee(id)
-        firstname = employee[1]
-        lastname = employee[2]
-        return render_template("remove_employee.html",firstname=firstname,lastname=lastname, id=id)
+        return render_template("remove_employee.html",employee=employee, restaurant=restaurant)
     if request.method == "POST":
         id = request.form["id"]
         if restaurants.remove_employee(id):

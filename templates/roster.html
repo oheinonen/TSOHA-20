@@ -3,41 +3,45 @@
 
 {% block body %}
   {% if session.username %}
+    {% if session.user_id == restaurant.owner%}
+        <h2>Ravintolan {{ restaurant.name }} viikon {{ week }} työvuorot</h2>
 
-    <h2>Ravintolan {{ name }} viikon {{ week }} työvuorot</h2>
+        {% for i in range(7) %}
+            {% if i == 0 %}
+                <h3>Maanantai</h3>
+            {% elif i == 1 %}
+                <h3>Tiistai</h3>
+            {% elif i == 2 %}
+            <h3>Keskiviikko</h3>
+            {% elif i == 3 %}
+                <h3>Torstai</h3>
+            {% elif i == 4 %}
+                <h3>Perjantai</h3>
+            {% elif i == 5 %}
+                <h3>Lauantai</h3>
+            {% elif i == 6 %}
+                <h3>Sunnuntai</h3>
+            {% endif %}
 
-    {% for i in range(7) %}
-        {% if i == 0 %}
-            <h3>Maanantai</h3>
-        {% elif i == 1 %}
-            <h3>Tiistai</h3>
-        {% elif i == 2 %}
-        <h3>Keskiviikko</h3>
-        {% elif i == 3 %}
-            <h3>Torstai</h3>
-        {% elif i == 4 %}
-            <h3>Perjantai</h3>
-        {% elif i == 5 %}
-            <h3>Lauantai</h3>
-        {% elif i == 6 %}
-            <h3>Sunnuntai</h3>
-        {% endif %}
+            {% for (shift,employee) in roster[i] %}
+                <h3>{{shift.name}}</h3>
+                <p>Rooli {{ shift.role}}</p> 
+                <p>Työntekijä {{ employee.firstname}} {{ employee.lastname }}</p> 
+                <p>klo {{shift.start_time.strftime("%H:%M")}}. Kesto {{shift.duration}} tuntia</p>
+                <p>
+                <a class="links" href="{{url_for('update_shift', id=shift.id), restaurantID=restaurant.id}}"> Muokkaa tätä työvuoroa</a>
+                </p>
+                <p>
+                <a class="links" href="{{url_for('remove_shift', id=shift.id), restaurantID=restaurant.id}}"> Poista tämä työvuoro</a>
+                </p>
+            {% endfor %}
 
-        {% for (shift,employee) in roster[i] %}
-            <h3>{{shift.name}}</h3>
-            <p>Rooli {{ shift.role}}</p> 
-            <p>Työntekijä {{ employee.firstname}} {{ employee.lastname }}</p> 
-            <p>klo {{shift.start_time.strftime("%H:%M")}}. Kesto {{shift.duration}} tuntia</p>
-            <p>
-            <a class="links" href="{{url_for('update_shift', id=shift.id)}}"> Muokkaa tätä työvuoroa</a>
-            </p>
-            <p>
-            <a class="links" href="{{url_for('remove_shift', id=shift.id)}}"> Poista tämä työvuoro</a>
-            </p>
         {% endfor %}
-
-    {% endfor %}
-
+    {% else %}
+  
+        <p>Voit katsoa vain oman ravintolasi työvuorolistoja.</p>
+    
+    {% endif %}
   {% else %}
   
     <p>Et ole kirjautunut sisään.</p>

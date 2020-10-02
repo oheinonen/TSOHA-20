@@ -12,6 +12,8 @@
   }
 </script>
 {% if session.username %}
+{% if session.user_id == restaurant.owner %}
+
   Luo uusi työvuoro 
   <form class="" action="/restaurant/add/shift" method="post" onsubmit="return check(this)">
 
@@ -46,11 +48,15 @@
           <option value="daily">Joka päivä</option>
       </select>
   </p>    
-    <input type="hidden" name="restaurantID" value={{restaurantID}}>
+    <input type="hidden" name="restaurantID" value={{restaurant.id}}>
     <input type="submit" value="Lisää työvuoro!">
   </form>
 
-  <p>
+  {% else %}
+
+  <p>Et voi lisätä tälle ravintolalle työvuoroa</p>
+
+  {% endif %}
 
 {% else %}
   

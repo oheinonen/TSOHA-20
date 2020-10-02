@@ -13,11 +13,11 @@
 </script>
 
 {% if session.username %}
-  Luo uusi ravintola
+  Luo uusi ravintola 
   <form class="" action="/add/restaurant" method="post" onsubmit="return check(this)">
     <p>Ravintolan nimi: <br>
     <input type="text" name="name" required></p>
-
+    <input type="hidden" name="owner" value="{{session.user_id}}">
     <input type="submit" value="Lisää ravintola!">
   </form>
 

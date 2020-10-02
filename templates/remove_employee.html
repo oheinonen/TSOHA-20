@@ -3,14 +3,22 @@
 
 {% block body %}
 {% if session.username %}
-  Halutako varmasti poistaa työntekijän {{ firstname }} {{ lastname }}?
+{% if user_id == restaurant.owner %}
+  Halutako varmasti poistaa työntekijän {{ employee.firstname }} {{ employee.astname }}?
   <form class="" action="/remove/employee" method="post">
 
-    <input type="hidden" name="id" value={{id}}>
+    <input type="hidden" name="id" value={{employee.id}}>
     <input type="submit" value="Poista!">
   </form>
 
   <a class="links" href="/">Peruuta</a>
+
+ {% else %}
+  
+  <p>Et voi poistaa tämän ravintolan työntekijöitä.</p>
+
+{% endif %}
+
 {% else %}
   
   <p>Et ole kirjautunut sisään.</p>

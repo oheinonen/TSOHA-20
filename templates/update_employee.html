@@ -18,6 +18,8 @@
 </script>
 
 {% if session.username %}
+{% if session.user_id == restaurant.owner%}
+
   <h3>Muokkaa työntekijän {{employee.lastname}} {{employee.firstname}} tietoja </h3> 
 
   <form class="" action="/update/employee" method="post" onsubmit="return check(this)">
@@ -47,7 +49,11 @@
     <input type="hidden" name="id" value="{{employee.id}}">
     <input type="submit" value="Muokkaa!">
   </form>
+  {% else %}
+  
+  <p>Voit muokata vain oman ravintolan työntekijöitä.</p>
 
+{% endif %}
 {% else %}
   
   <p>Et ole kirjautunut sisään.</p>

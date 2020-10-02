@@ -3,14 +3,20 @@
 
 {% block body %}
 {% if session.username %}
-  Halutako varmasti poistaa työvuoron {{ date }}: {{ name }} ?
+{% if session.user_id == restaurant.owner %}
+  Halutako varmasti poistaa työvuoron {{ shift.date }}: {{ shift.name }} ?
   <form class="" action="/remove/shift" method="post">
 
-    <input type="hidden" name="id" value={{id}}>
+    <input type="hidden" name="id" value={{shift.id}}>
     <input type="submit" value="Poista!">
   </form>
 
   <a class="links" href="/">Peruuta</a>
+  {% else %}
+  
+  <p>Voit poistaa vain oman ravintolasi työvuoroja .</p>
+
+{% endif %}
 {% else %}
   
   <p>Et ole kirjautunut sisään.</p>

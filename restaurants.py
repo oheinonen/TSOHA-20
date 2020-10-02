@@ -3,10 +3,10 @@ from flask import session
 from datetime import datetime, timedelta
 import random
 
-def add_restaurant(name):
+def add_restaurant(name,owner):
     try:
-        sql = "INSERT INTO restaurants (name) VALUES (:name)"
-        db.session.execute(sql, {"name":name})
+        sql = "INSERT INTO restaurants (name,owner) VALUES (:name, :owner)"
+        db.session.execute(sql, {"name":name, "owner":owner})
         db.session.commit()
     except:
         return False
@@ -30,15 +30,16 @@ def update_restaurant(id,name):
         return False
     return True
 
-def get_name(id):
-    sql = "SELECT name FROM restaurants WHERE id=:id AND visible=1"
+# id, owner, name
+def get_restaurant(id):
+    sql = "SELECT * FROM restaurants WHERE id=:id AND visible=1"
     result = db.session.execute(sql, {"id":id})
-    name = result.fetchone()[0]
-    return name
+    restaurant = result.fetchone()
+    return restaurant
 
-def get_all():
-    sql = "SELECT name,id FROM restaurants WHERE visible=1"
-    result = db.session.execute(sql)
+def get_all(owner):
+    sql = "SELECT * FROM restaurants WHERE visible=1 AND owner=:owner"
+    result = db.session.execute(sql,{"owner":owner})
     restaurants = result.fetchall()
     return restaurants
 

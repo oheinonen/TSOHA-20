@@ -12,16 +12,20 @@
   }
 </script>
 {% if session.username %}
-  <h3>Muokkaa ravintolaa {{name}}</h3>
-  <form class="" action="/update/restaurant" method="post" onsubmit="return check(this)">
-    <p>Ravintolan uusi nimi: <br>
-    <input type="text" name="new_name" value="{{name}}" required></p>
+  {% if session.user_id == restaurant.owner %}
+    <h3>Muokkaa ravintolaa {{name}}</h3>
+    <form class="" action="/update/restaurant" method="post" onsubmit="return check(this)">
+      <p>Ravintolan uusi nimi: <br>
+      <input type="text" name="new_name" value="{{name}}" required></p>
 
-    <input type="hidden" name="id" value={{id}}>
-    <input type="submit" value="Muokkaa!">
-  </form>
+      <input type="hidden" name="id" value={{id}}>
+      <input type="submit" value="Muokkaa!">
+    </form>
 
-  <a class="links" href="/">Peruuta</a>
+    <a class="links" href="/">Peruuta</a>
+  {% else %}
+    <h3>Et voi muokata tätä ravintolaa</h3>
+  {% endif %}
 
 {% else %}
 

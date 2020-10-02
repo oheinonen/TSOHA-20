@@ -12,11 +12,12 @@
   }
 </script>
 {% if session.username %}
-  <h3>Muokkaa työvuoroa {{name}} {{date}} </h3> 
+{% if session.user_id == restaurant.owner %}
+  <h3>Muokkaa työvuoroa {{shift.name}} {{shift.date}} </h3> 
   <form class="" action="/update/shift" method="post" onsubmit="return check(this)">
 
     <p>Työvuoron uusi nimi: <br>
-    <input type="text" name="new_name" value="{{name}}" required></p>
+    <input type="text" name="new_name" value="{{shift.name}}" required></p>
     <p>
         Valitse työvuoron tehtävä
         <select name="new_role" id="role" required>
@@ -29,24 +30,29 @@
     </p>    
     <p>
         Työvuoron aloitusaika sekä päivä<br>
-        <input type="date" name="new_date" min="2020-01-01" max="2025-12-31" value="{{date}}" required>
-        <input type="time" name="new_start_time" value="{{start_time}}" required>
+        <input type="date" name="new_date" min="2020-01-01" max="2025-12-31" value="{{shift.date}}" required>
+        <input type="time" name="new_start_time" value="{{shift.start_time}}" required>
     </p>
     <p>
         Työvuoron kesto tunneissa<br>
-        <input type="number" name="new_duration" min="0" max="24" value="{{duration}}" required>
+        <input type="number" name="new_duration" min="0" max="24" value="{{shift.duration}}" required>
     </p>
     
   </p>    
-  <input type="hidden" name="restaurantID" value="{{restaurantID}}">
-  <input type="hidden" name="id" value="{{id}}">
+  <input type="hidden" name="restaurantID" value="{{restaurant.id}}">
+  <input type="hidden" name="id" value="{{shift.id}}">
   <input type="submit" value="Muokkaa!">
   </form>
 
+  {% else %}
+  
+  <p>Voit muokata vain oman ravintolasi työvuoroja.</p>
+
+  {% endif %}
 {% else %}
   
-  <p>Et ole kirjautunut sisään.</p>
-  <a href="/login">Kirjaudu sisään täältä!</a>
+<p>Et ole kirjautunut sisään.</p>
+<a href="/login">Kirjaudu sisään täältä!</a>
 
 {% endif %}
 {% endblock %}

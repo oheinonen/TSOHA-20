@@ -3,19 +3,19 @@
 
 {% block body %}
   {% if session.username %}
-
+  {% if session.user_id == restaurant.owner %}
     {% if shifts %}
-      Ravintolan {{ name }} päivän {{ date }} työvuorot:
+      Ravintolan {{ restaurant.name }} päivän {{ date }} työvuorot:
 
       {% for shift in shifts %}
           <h3>{{shift.name}}</h3>
           <p>Rooli {{ shift.role}}</p> 
           <p>klo {{shift.start_time.strftime("%H:%M")}}. Kesto {{shift.duration}} tuntia</p>
           <p>
-            <a class="links" href="{{url_for('update_shift', id=shift.id)}}"> Muokkaa tätä työvuoroa</a>
+            <a class="links" href="{{url_for('update_shift', id=shift.id, restaurantID = restaurant.id)}}"> Muokkaa tätä työvuoroa</a>
           </p>
           <p>
-            <a class="links" href="{{url_for('remove_shift', id=shift.id)}}"> Poista tämä työvuoro</a>
+            <a class="links" href="{{url_for('remove_shift', id=shift.id, restauranID= restaurant.id)}}"> Poista tämä työvuoro</a>
           </p>
       {% endfor %}
     
@@ -27,10 +27,16 @@
       <p>Katso toisen päivän työvuorot täältä</p>
       <form action="dayview" method="get">
         <input type="date" name="date" min="2020-01-01" max="2025-12-31" required>
-        <input type="hidden" name="id" value={{id}}>
+        <input type="hidden" name="id" value={{restaurant.id}}>
         <input type="submit" value="siirry">
       </form>
     </div> 
+
+  {% else %}
+  
+    <p>Voit katsoa vain oman ravintolasi vuoroja.</p>
+  
+  {% endif %}
 
   {% else %}
   

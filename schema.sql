@@ -7,6 +7,7 @@ CREATE TABLE users (
 
 CREATE TABLE restaurants (
   id SERIAL PRIMARY KEY,
+  owner INT REFERENCES users(id),
   name TEXT UNIQUE,
   visible INT DEFAULT 1 CHECK(visible IN (0,1))
 );

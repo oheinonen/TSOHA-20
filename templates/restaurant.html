@@ -3,15 +3,17 @@
 
 {% block body %}
   {% if session.username %}
+  {% if session.user_id == restaurant.owner %}
+
   <h1>
-    Ravintolan {{ name }} sivu
+    Ravintolan {{restaurant.name }} sivu 
   </h1>
 
   <div>
     <p>Tutki haluamasi päivän työvuoroja:</p>
     <form action="dayview" method="get">
       <input type="date" name="date" min="2020-01-01" max="2025-12-31" required>
-      <input type="hidden" name="id" value={{id}}>
+      <input type="hidden" name="id" value={{restaurant.id}}>
       <input type="submit" value="siirry">
     </form>
   </div> 
@@ -20,7 +22,7 @@
     <p>Katso haluamasi viikon henkilöstövahvuuskalenteri</p>
     <form action="staff_strength_calendar" method="GET">
       <input type="week" name="week">
-      <input type="hidden" name="restaurantID" value={{id}}>
+      <input type="hidden" name="restaurantID" value={{restaurant.id}}>
       <input type="submit" value="siirry">
     </form>
 
@@ -31,7 +33,7 @@
     <p>Tee työvuorolista valitsemallesi viikolle</p>
     <form action="roster" method="GET">
       <input type="week" name="week">
-      <input type="hidden" name="restaurantID" value={{id}}>
+      <input type="hidden" name="restaurantID" value={{restaurant.id}}>
       <input type="submit" value="siirry">
     </form>
 
@@ -59,10 +61,10 @@
             {{employee.lastname}},{{employee.firstname}}
           </p>
           <p>
-            <a class="links" href="{{url_for('update_employee', id=employee.id)}}"> Muokkaa työntekijän tietoja</a>
+            <a class="links" href="{{url_for('update_employee', id=employee.id, restaurantID=restaurant.id)}}"> Muokkaa työntekijän tietoja</a>
           </p>
           <p>
-            <a class="links" href="{{url_for('remove_employee', id=employee.id) }}"> Poista tämä työntekijä</a>
+            <a class="links" href="{{url_for('remove_employee', id=employee.id, restaurantID=restaurant.id) }}"> Poista tämä työntekijä</a>
           </p>
         {% endfor %}
         </div>
@@ -73,21 +75,27 @@
 
   </div>
   <p>
-    <a class="links" href="{{url_for('add_shift', restaurantID=id) }}" method="post">Lisää työvuoro ravintolalle</a>
+    <a class="links" href="{{url_for('add_shift', restaurantID=restaurant.id) }}" method="post">Lisää työvuoro ravintolalle</a>
   </p>
   <p>
-    <a class="links" href="{{url_for('add_employee', restaurantID=id) }}" method="post">Lisää työntekijä ravintolalle</a>
+    <a class="links" href="{{url_for('add_employee', restaurantID=restaurant.id) }}" method="post">Lisää työntekijä ravintolalle</a>
   </p>
   <p>
-    <a class="links" href="{{url_for('update_restaurant', id=id) }}"> Muokkaa tätä ravintolaa</a>
+    <a class="links" href="{{url_for('update_restaurant', restaurantID=restaurant.id) }}"> Muokkaa tätä ravintolaa</a>
   </p>
   <p>
-    <a class="links" href="{{url_for('remove_restaurant', id=id) }}"> Poista tämä ravintola</a>
+    <a class="links" href="{{url_for('remove_restaurant', restaurantID=restaurant.id) }}"> Poista tämä ravintola</a>
   </p>
   {% else %}
   
-    <p>Et ole kirjautunut sisään.</p>
-    <a class="links" href="/login">Kirjaudu sisään täältä!</a>
+    <p>Voit katsoa vain oman ravintolasi sivuja.</p>
+    {{session.user_id}} {{restaurant.owner}}
 
   {% endif %}
+  {% else %}
+  
+  <p>Et ole kirjautunut sisään.</p>
+  <a class="links" href="/login">Kirjaudu sisään täältä!</a>
+
+{% endif %}
 {% endblock %}}

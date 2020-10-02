@@ -17,7 +17,9 @@
     }
 </script>
 
-    {% if session.username %}
+    {% if session.username  %}
+    {% if session.user_id == restaurant.owner %}
+
         Luo uusi työntekijä 
         <form class="" action="/restaurant/add/employee" method="post" onsubmit="return check(this)">
 
@@ -41,9 +43,15 @@
                 <input type="number" name="max_hours" min="0" max="100" required>
             </p>
 
-            <input type="hidden" name="restaurantID" value={{restaurantID}}>
+            <input type="hidden" name="restaurantID" value={{restaurant.id}}>
             <input type="submit" value="Lisää työntekijä!">
         </form>
+        {% else %}
+  
+        <p>Et voi lisätä tälle ravintolalle työntekijää</p>
+        {{session.user_id}} {{session.username}}{{restaurant.owner}}
+    
+        {% endif %}
 
     {% else %}
   
