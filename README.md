@@ -12,13 +12,17 @@ Järjestelmä luo työvuoroista henkilöstövahvuuskalenterin, joka näyttää t
 [Sovellusta pääsee testaamaan täältä](https://tsoha-rostermaker.herokuapp.com)
 
 + Käyttäjä voi rekisteröityä sekä kirjautua sovellukseen
-+ Käyttäjä voi luoda ravintolan 
++ Käyttäjä voi luoda ravintolan omalle käyttäjälleen
 + Käyttäjä voi lisätä ravintolalleen työntekijöitä ( voi olla vain yksi rooli tällä hetkellä)
-+ Käyttäjä voi lisätä ravintolalleen työvuoroja
++ Käyttäjä voi lisätä ravintolalleen työvuoroja. Yhdellä kerralla voi lisätä vuoron joko joka päivälle toistuvaksi tai kerran viikossa toistuvaksi
 + Käyttäjä voi myös muokata/poistaa edellä mainittuja
++ Käyttäjä voi listata viikottaisen henkilöstövahvuuskalenterin 
++ Käyttäjä voi listata työvuorolistan (ominaisuus vielä keskeneräinen eikä juurikaan testattu, mutta pitäisi toimia käyttäjän oikeilla syötteillä)  
++ Työntekijöille ei vielä voi antaa vapaapäiviä 
++ Työntekijäkohtaista raportointia ei vielä implementoitu
 
 
-#### Toimintoja:
+#### Lopullisen version suunnitellut toiminnot:
 
 + Kirjautuminen
 + Työntekijöiden lisääminen, muokkaaminen ja poistaminen
