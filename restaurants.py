@@ -90,14 +90,11 @@ def remove_shift(id):
         return False
     return True
 
-####################
-# TÄHÄN LOMAPÄIVÄT #
-####################
-def employee_has_shift(date,employeeID):
+def can_work(date,employeeID):
     sql = "SELECT id,name,restaurantID,employeeID,role,date,start_time,duration FROM shifts WHERE employeeID=:employeeID AND date=:date"
     result = db.session.execute(sql, {"employeeID":employeeID, "date":date})
-    shift = result.fetchone()[0]
-    return True if shift else False 
+    has_shift = result.fetchone()[0]
+    return has_shift and has_dayoff(date,employeeID)
 
 def add_employee_to_shift(shiftID,employeeID):
     try:
@@ -202,6 +199,11 @@ def remove_dayoff(employeeID,date):
         return False
     return True
 
+def has_dayoff(employeeID,date):
+    sql = "SELECT employeeID,date FROM dayoffs WHERE employeeID=:employeeID AND visible=1 AND date=:date"
+    result = db.session.execute(sql, {"employeeID":employeeID, "date":date})
+    employee = result.fetchone()[0]
+    return employee
 
 # Returns employees in this restaurant in a tuple where:
 # 1st element: all employees
@@ -260,8 +262,8 @@ def create_roster(week,restaurantID):
                 current_shifts = get_shifts_by_employee_and_week(employee.id,restaurantID,week)
                 hours = 0
                 for current_shift in current_shifts:
-                    # Check if employee already has shift this day
-                    if employee_has_shift(employee.id, current_shift.date):
+                    # Check if employee already has shift or dayoff this day
+                    if can_work(employee.id, current_shift.date):
                         has_shift = True
                     else:
                         hours += int(current_shift.duration)
