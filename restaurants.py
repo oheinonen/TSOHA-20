@@ -90,6 +90,9 @@ def remove_shift(id):
         return False
     return True
 
+####################
+# TÄHÄN LOMAPÄIVÄT #
+####################
 def employee_has_shift(date,employeeID):
     sql = "SELECT id,name,restaurantID,employeeID,role,date,start_time,duration FROM shifts WHERE employeeID=:employeeID AND date=:date"
     result = db.session.execute(sql, {"employeeID":employeeID, "date":date})
@@ -179,6 +182,26 @@ def get_employees_by_role(id,role):
     result = db.session.execute(sql, {"id":id, "role":role})
     employees = result.fetchall()
     return employees
+
+def add_dayoff(employeeID,date,reason):
+    try:
+        sql = "INSERT INTO dayoffs (employeeID,date,reason) VALUES (:employeeID, :date, :reason)"
+        db.session.execute(sql, {"employeeID":employeeID,"date":date,"reason":reason})
+        db.session.commit()
+    except:
+        return False
+    return True
+
+def remove_dayoff(employeeID,date):
+    try:
+        sql = "UPDATE dayoffs SET visible=0 WHERE employeeID=:employeeID AND date=:date"
+        print("JOO",employeeID,date)
+        db.session.execute(sql,{"employeeID":employeeID, "date":date})
+        db.session.commit()
+    except:
+        return False
+    return True
+
 
 # Returns employees in this restaurant in a tuple where:
 # 1st element: all employees

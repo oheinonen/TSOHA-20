@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+{% block title %}Lisää vapaapäivä{% endblock %}
+
+{% block body %}
+<script>
+    function check(form){
+      if(form.reason.value.length > 200) {
+        alert("Syy on liian pitkä!");
+        return false;
+
+      return true;
+    }
+    }
+</script>
+
+    {% if session.username  %}
+    {% if session.user_id == restaurant.owner %}
+
+        Lisää uusi vapaapäivä työntekijälle {{employee.lastname}} ,{{employee.firstname}}
+        <form class="" action="/add/dayoff" method="post" onsubmit="return check(this)">
+
+            <p>
+                Vapaapäivä:<br>
+                <input type="date" name="date" min="2020-01-01" max="2025-12-31" required>
+            </p>
+            <p>Syy: <br>
+                <input type="text" name="reason" required></p>
+            <p>
+            <input type="hidden" name="restaurantID" value={{restaurant.id}}>
+            <input type="hidden" name="employeeID" value={{employee.id}}>
+            <input type="submit" value="Lisää vapaapäivä!">
+        </form>
+        {% else %}
+  
+        <p>Et voi lisätä tälle työntekijälle vapaapäivää</p>
+    
+        {% endif %}
+
+    {% else %}
+  
+    <p>Et ole kirjautunut sisään.</p>
+    <a  class="links" href="/login">Kirjaudu sisään täältä!</a>
+
+    {% endif %}
+{% endblock %}

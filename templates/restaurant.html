@@ -61,6 +61,12 @@
             {{employee.lastname}},{{employee.firstname}}
           </p>
           <p>
+            <a class="links" href="{{url_for('add_dayoff', id=employee.id)}}">Lisää vapaapäivä työntekijälle</a>
+          </p>
+          <p>
+            <a class="links" href="{{url_for('remove_dayoff', id=employee.id)}}">Poista työntekijän vapaapäivä</a>
+          </p>
+          <p>
             <a class="links" href="{{url_for('update_employee', id=employee.id, restaurantID=restaurant.id)}}"> Muokkaa työntekijän tietoja</a>
           </p>
           <p>

@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block title %}Poista vapaapäivä{% endblock %}
+
+{% block body %}
+{% if session.username %}
+{% if session.user_id == restaurant.owner %}
+  Halutako  poistaa työntekijän {{ employee.firstname }} {{ employee.lastname }} vapaapäivän?
+  <form class="" action="/remove/dayoff" method="post">
+    <p>
+    Valitse poistettava päivä:<br>
+    <input type="date" name="date" min="2020-01-01" max="2025-12-31" required>
+    </p>
+    <input type="hidden" name="employeeID" value={{employee.id}}>
+    <input type="hidden" name="restaurantID" value={{restaurant.id}}>
+    <input type="submit" value="Poista!">
+  </form>
+
+  <a class="links" href="/">Peruuta</a>
+
+ {% else %}
+  
+  <p>Et voi poistaa tämän työntekijän vapaapäivää</p>
+
+{% endif %}
+
+{% else %}
+  
+  <p>Et ole kirjautunut sisään.</p>
+  <a href="/login">Kirjaudu sisään täältä!</a>
+
+{% endif %}
+{% endblock %}

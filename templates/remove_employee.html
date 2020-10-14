@@ -3,8 +3,8 @@
 
 {% block body %}
 {% if session.username %}
-{% if user_id == restaurant.owner %}
-  Halutako varmasti poistaa työntekijän {{ employee.firstname }} {{ employee.astname }}?
+{% if session.user_id == restaurant.owner %}
+  Halutako varmasti poistaa työntekijän {{ employee.firstname }} {{ employee.lastname }}?
   <form class="" action="/remove/employee" method="post">
 
     <input type="hidden" name="id" value={{employee.id}}>

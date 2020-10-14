@@ -10,7 +10,6 @@ def index():
     if session:
         user = session["user_id"]
         all_restaurants = restaurants.get_all(user)
-        print(all_restaurants)
     return render_template("index.html", all_restaurants=all_restaurants)
 
 
@@ -44,6 +43,7 @@ def roster():
     restaurant = restaurants.get_restaurant(restaurantID)
     roster = restaurants.create_roster(week,restaurant.id)
     return render_template("roster.html", roster=roster, week=week, restaurant=restaurant)
+
 
 
 # Routes for forms
@@ -209,6 +209,40 @@ def remove_employee():
             return redirect("/")
         else:
             return render_template("error.html", message = "Työntekijän poisto epäonnistui")
+
+@app.route("/add/dayoff", methods=["GET", "POST"])
+def add_dayoff():
+    if request.method == "GET":
+        id = request.args.get("id")
+        employee = restaurants.get_employee(id)
+        restaurant = restaurants.get_restaurant(employee[3])
+        return render_template("add_dayoff.html", employee=employee,restaurant=restaurant)
+    if request.method == "POST":
+        date = request.form["date"]
+        reason = request.form["reason"]
+        employeeID = request.form["employeeID"]        
+        restaurantID = request.form["restaurantID"]        
+        if restaurants.add_dayoff(employeeID,date,reason):
+            return redirect(url_for("restaurant", id=restaurantID))
+        else:
+            return render_template("error.html", message = "Vapaapäivän lisäys epäonnistui")
+
+@app.route("/remove/dayoff", methods=["GET", "POST"])
+def remove_dayoff():
+    if request.method == "GET":
+        employeeID = request.args.get("id")
+        employee = restaurants.get_employee(employeeID)
+        restaurant = restaurants.get_restaurant(employee[3])
+        return render_template("remove_dayoff.html",employee=employee, restaurant=restaurant)
+    if request.method == "POST":
+        date = request.form["date"]
+        employeeID = request.form["employeeID"]        
+        restaurantID = request.form["restaurantID"]        
+        if restaurants.remove_dayoff(employeeID,date):
+            # Lisää message / parempi route vielä
+            return redirect("/")
+        else:
+            return render_template("error.html", message = "Vapaapäivän poisto epäonnistui")
 
 # Register/login/logout 
 
