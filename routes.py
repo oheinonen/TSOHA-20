@@ -5,11 +5,12 @@ import users, restaurants
 
 @app.route("/")
 def index():
-    # List all restaurants currently added to the website
+    # List all restaurants currently added to the website by this user
     all_restaurants = []
     if session:
         user = session["user_id"]
         all_restaurants = restaurants.get_all(user)
+        print(all_restaurants)
     return render_template("index.html", all_restaurants=all_restaurants)
 
 
