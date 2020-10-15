@@ -41,8 +41,8 @@ def roster():
     week = request.args["week"]
     restaurantID = request.args["restaurantID"]
     restaurant = restaurants.get_restaurant(restaurantID)
-    roster = restaurants.create_roster(week,restaurant.id)
-    return render_template("roster.html", roster=roster, week=week, restaurant=restaurant)
+    (roster,unused_hours) = restaurants.create_roster(week,restaurant.id)
+    return render_template("roster.html", roster=roster, unused_hours=unused_hours, week=week, restaurant=restaurant)
 
 @app.route("/employee/schedule")
 def personal_schedule():
@@ -52,7 +52,6 @@ def personal_schedule():
     restaurant = restaurants.get_restaurant(restaurantID)
     employee = restaurants.get_employee(employeeID)
     schedule = restaurants.own_shifts(employeeID,week)
-    print(schedule)
     return render_template("personal_schedule.html", schedule=schedule, week=week, employee=employee,restaurant=restaurant)
 
 # Routes for forms

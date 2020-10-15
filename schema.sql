@@ -17,6 +17,7 @@ CREATE TABLE employees (
   firstname VARCHAR(50),
   lastname VARCHAR(50),
   restaurantID INT REFERENCES restaurants(id),
+  role VARCHAR(20),
   max_hours INT CHECK(max_hours BETWEEN 0 AND 100),
   visible INT DEFAULT 1 CHECK(visible IN (0,1))
 );

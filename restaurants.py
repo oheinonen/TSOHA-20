@@ -181,7 +181,13 @@ def add_dayoff(employeeID,date,reason):
         db.session.execute(sql, {"employeeID":employeeID,"date":date,"reason":reason})
         db.session.commit()
     except:
-        return False
+        try:
+            sql = "UPDATE dayoffs SET visible=1, reason=:reason WHERE employeeID=:employeeID AND date=:date"
+            db.session.execute(sql,{"employeeID":employeeID, "date":date,"reason":reason})
+            db.session.commit()
+        except:
+            return False
+        return True
     return True
 
 def remove_dayoff(employeeID,date):
@@ -196,14 +202,14 @@ def remove_dayoff(employeeID,date):
 def has_dayoff(employeeID,date):
     sql = "SELECT employeeID,date FROM dayoffs WHERE employeeID=:employeeID AND visible=1 AND date=:date"
     result = db.session.execute(sql, {"employeeID":employeeID, "date":date})
-    dayoff = result.fetchone()[0]
+    dayoff = result.fetchone()
     return dayoff
 
 
-def has_shift(date,employeeID):
+def has_shift(employeeID,date):
     sql = "SELECT id,name,restaurantID,employeeID,role,date,start_time,duration FROM shifts WHERE employeeID=:employeeID AND date=:date"
     result = db.session.execute(sql, {"employeeID":employeeID, "date":date})
-    shift = result.fetchone()[0]
+    shift = result.fetchone()
     return shift 
     
 def own_shifts(employeeID,week):
@@ -270,29 +276,35 @@ def create_roster(week,restaurantID):
         shifts = get_shifts_by_date(restaurantID,date)
         this_day_shifts = []
         for shift in shifts:
-
              # employees are shuffled to create randomness in picking employee
             employees = get_employees_by_role(restaurantID,shift.role)
             employees = random.sample(employees, len(employees))
             for employee in employees:
-                has_shift = False
                 current_shifts = get_shifts_by_employee_and_week(employee.id,restaurantID,week)
                 hours = 0
                 for current_shift in current_shifts:
-                    # Check if employee already has shift or dayoff this day
-                    if has_shift(employee.id, current_shift.date) or has_dayoff(employee.id,current_shift.date):
-                        has_shift = True
-                    else:
-                        hours += int(current_shift.duration)
-
-                if hours + shift.duration <= employee.max_hours and not has_shift:
+                    hours += int(current_shift.duration)
+                able_to_work = not has_shift(employee.id, shift.date) and not has_dayoff(employee.id,shift.date)
+                if hours + shift.duration <= employee.max_hours and able_to_work:
                     if add_employee_to_shift(shift.id,employee.id):
                         this_day_shifts.append((shift,employee))
                         break
+                    
 
         roster[i] = this_day_shifts
         modified_date = datetime.strptime(date, "%Y-%m-%d") + timedelta(days=1)
         date = modified_date.strftime( "%Y-%m-%d")
-    
-    return roster
+    return (roster,unused_hours(week,restaurantID,roster))
      
+# counts unused working hours in particular restaurant, week using created roster
+def unused_hours(week,restaurantID,roster):
+    hours = 0
+    employees = get_employees(restaurantID)[0]
+    date = datetime.strptime(week + '-1', "%G-W%V-%u").strftime( "%Y-%m-%d")
+    for employee in employees:
+        hours += employee[5]
+    roster_hours = 0
+    for day in roster:
+        for (shift,employee) in day:
+            roster_hours += shift.duration
+    return hours - roster_hours
