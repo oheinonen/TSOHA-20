@@ -4,9 +4,8 @@
 {% block body %}
   {% if session.username %}
     {% if session.user_id == restaurant.owner%}
-        <h2>Ravintolan {{ restaurant.name }} viikon {{ week }} työvuorot</h2>
-
-        {% for i in range(7) %}
+        <h2>Työntekijän {{ employee.firstname }}{{ employee.lastname }} viikon {{ week }} työvuorot ravintolassa {{ restaurant.name }}</h2>
+        {% for (i,shift) in schedule %}
             {% if i == 0 %}
                 <h3>Maanantai</h3>
             {% elif i == 1 %}
@@ -22,10 +21,9 @@
             {% elif i == 6 %}
                 <h3>Sunnuntai</h3>
             {% endif %}
-
-            {% for (shift,employee) in roster[i] %}
+            {% if shift %}
                 <h3>{{shift.name}}</h3>
-                <p>Rooli {{ shift.role}}</p> 
+                <p>Rooli {{shift.role}}</p> 
                 <p>Työntekijä {{ employee.firstname}} {{ employee.lastname }}</p> 
                 <p>klo {{shift.start_time.strftime("%H:%M")}}. Kesto {{shift.duration}} tuntia</p>
                 <p>
@@ -34,9 +32,12 @@
                 <p>
                 <a class="links" href="{{url_for('remove_shift', id=shift.id, restaurantID=restaurant.id)}}"> Poista tämä työvuoro</a>
                 </p>
-            {% endfor %}
+            {% else %}
+                <p>Ei vuoroa</p>
+            {% endif %}
 
         {% endfor %}
+
     {% else %}
   
         <p>Voit katsoa vain oman ravintolasi työvuorolistoja.</p>

@@ -90,11 +90,6 @@ def remove_shift(id):
         return False
     return True
 
-def can_work(date,employeeID):
-    sql = "SELECT id,name,restaurantID,employeeID,role,date,start_time,duration FROM shifts WHERE employeeID=:employeeID AND date=:date"
-    result = db.session.execute(sql, {"employeeID":employeeID, "date":date})
-    has_shift = result.fetchone()[0]
-    return has_shift and has_dayoff(date,employeeID)
 
 def add_employee_to_shift(shiftID,employeeID):
     try:
@@ -124,7 +119,7 @@ def get_shifts_by_date(restaurantID,date):
     return shifts
 
 def get_shifts_by_employee_and_week(restaurantID,employeeID,week): 
-    start_date = datetime.strptime(week + '-1', "%Y-W%W-%w").strftime( "%Y-%m-%d")
+    start_date = datetime.strptime(week + '-1', "%G-W%V-%u").strftime( "%Y-%m-%d")
     modified_date = datetime.strptime(start_date, "%Y-%m-%d") + timedelta(days=7)
     end_date = modified_date.strftime( "%Y-%m-%d")
     sql = "SELECT id,name,restaurantID,employeeID,role,date,start_time,duration FROM shifts WHERE employeeID=:employeeID AND restaurantID=:restaurantID AND visible=1 AND date BETWEEN :start_date AND :end_date"
@@ -192,7 +187,6 @@ def add_dayoff(employeeID,date,reason):
 def remove_dayoff(employeeID,date):
     try:
         sql = "UPDATE dayoffs SET visible=0 WHERE employeeID=:employeeID AND date=:date"
-        print("JOO",employeeID,date)
         db.session.execute(sql,{"employeeID":employeeID, "date":date})
         db.session.commit()
     except:
@@ -202,8 +196,31 @@ def remove_dayoff(employeeID,date):
 def has_dayoff(employeeID,date):
     sql = "SELECT employeeID,date FROM dayoffs WHERE employeeID=:employeeID AND visible=1 AND date=:date"
     result = db.session.execute(sql, {"employeeID":employeeID, "date":date})
-    employee = result.fetchone()[0]
-    return employee
+    dayoff = result.fetchone()[0]
+    return dayoff
+
+
+def has_shift(date,employeeID):
+    sql = "SELECT id,name,restaurantID,employeeID,role,date,start_time,duration FROM shifts WHERE employeeID=:employeeID AND date=:date"
+    result = db.session.execute(sql, {"employeeID":employeeID, "date":date})
+    shift = result.fetchone()[0]
+    return shift 
+    
+def own_shifts(employeeID,week):
+    employee = get_employee(employeeID)
+    restaurant = get_restaurant(employee[3])
+    shifts = get_shifts_by_employee_and_week(restaurant[0],employeeID,week)
+    date = datetime.strptime(week + '-1', "%G-W%V-%u").strftime( "%Y-%m-%d")
+    schedule = [[]]*7
+    # For each day this week, add shifts to schedule which will be returned
+    for i in range(7):
+        schedule[i] = (i,None)
+        for shift in shifts:
+            if str(shift.date) == date:
+                schedule[i] = (i,shift)
+        modified_date = datetime.strptime(date, "%Y-%m-%d") + timedelta(days=1)
+        date = modified_date.strftime( "%Y-%m-%d")
+    return schedule
 
 # Returns employees in this restaurant in a tuple where:
 # 1st element: all employees
@@ -263,11 +280,10 @@ def create_roster(week,restaurantID):
                 hours = 0
                 for current_shift in current_shifts:
                     # Check if employee already has shift or dayoff this day
-                    if can_work(employee.id, current_shift.date):
+                    if has_shift(employee.id, current_shift.date) or has_dayoff(employee.id,current_shift.date):
                         has_shift = True
                     else:
                         hours += int(current_shift.duration)
-                        print(hours)
 
                 if hours + shift.duration <= employee.max_hours and not has_shift:
                     if add_employee_to_shift(shift.id,employee.id):
