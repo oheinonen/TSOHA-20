@@ -1,7 +1,7 @@
 from app import app
 from flask import render_template, request, redirect,session, url_for
 from db import db
-import users, restaurants
+import users, restaurants,employees
 
 @app.route("/")
 def index():
@@ -17,8 +17,16 @@ def index():
 def restaurant(id):
     restaurant = restaurants.get_restaurant(id)
     shifts = restaurants.get_shifts(id)
-    employees = restaurants.get_employees(id)
-    return render_template("restaurant.html", restaurant=restaurant, shifts=shifts, employees=employees)
+    all_employees = employees.get_employees(id)
+    return render_template("restaurant.html", restaurant=restaurant, shifts=shifts, employees=all_employees)
+
+@app.route("/employee")
+def employee():
+    id = request.args["id"]
+    employee = employees.get_employee(id)
+    restaurant = restaurants.get_restaurant(employee[3])
+    print(employee,restaurant)
+    return render_template("employee.html",employee=employee,restaurant=restaurant)
 
 @app.route("/restaurant/dayview")
 def restaurant_dayview():
@@ -50,8 +58,8 @@ def personal_schedule():
     employeeID = request.args["employeeID"]
     restaurantID = request.args["restaurantID"]
     restaurant = restaurants.get_restaurant(restaurantID)
-    employee = restaurants.get_employee(employeeID)
-    schedule = restaurants.own_shifts(employeeID,week)
+    employee = employees.get_employee(employeeID)
+    schedule = employees.own_shifts(employeeID,week)
     return render_template("personal_schedule.html", schedule=schedule, week=week, employee=employee,restaurant=restaurant)
 
 # Routes for forms
@@ -138,7 +146,8 @@ def update_shift():
         new_start_time = request.form["new_start_time"]
         new_duration = request.form["new_duration"]
         restaurantID = request.form["restaurantID"]
-        if restaurants.update_shift(id, new_name, new_role, new_date, new_start_time, new_duration):
+        keep_employee = request.form["keep_employee"]
+        if restaurants.update_shift(id, new_name, new_role, new_date, new_start_time, new_duration,keep_employee):
             # Lisää message / parempi route vielä
             return redirect(url_for('restaurant', id=restaurantID))
         else:
@@ -174,7 +183,7 @@ def add_employee():
         role = request.form["role"]
         max_hours = request.form["max_hours"]
 
-        if restaurants.add_employee(firstname,lastname,restaurantID, role, max_hours):
+        if employees.add_employee(firstname,lastname,restaurantID, role, max_hours):
             return redirect(url_for("restaurant", id=restaurantID))
         else:
             return render_template("error.html", message = "Työntekijän lisäys epäonnistui")
@@ -186,7 +195,7 @@ def update_employee():
         id = request.args.get("id")
         restaurantID = request.args["restaurantID"]
         restaurant = restaurants.get_restaurant(restaurantID)
-        employee = restaurants.get_employee(id)
+        employee = employees.get_employee(id)
         return render_template("update_employee.html", employee=employee, restaurant=restaurant)
 
     if request.method == "POST":
@@ -196,7 +205,7 @@ def update_employee():
         new_role = request.form["new_role"]
         new_max_hours = request.form["new_max_hours"]
         restaurantID = request.form["restaurantID"]
-        if restaurants.update_employee(id, new_firstname, new_lastname, new_role, new_max_hours):
+        if employees.update_employee(id, new_firstname, new_lastname, new_role, new_max_hours):
             # Lisää message / parempi route vielä
             return redirect("/")
         else:
@@ -208,11 +217,11 @@ def remove_employee():
         id = request.args.get("id")
         restaurantID = request.args["restaurantID"]
         restaurant = restaurants.get_restaurant(restaurantID)
-        employee = restaurants.get_employee(id)
+        employee = employees.get_employee(id)
         return render_template("remove_employee.html",employee=employee, restaurant=restaurant)
     if request.method == "POST":
         id = request.form["id"]
-        if restaurants.remove_employee(id):
+        if employees.remove_employee(id):
             # Lisää message / parempi route vielä
             return redirect("/")
         else:
@@ -222,7 +231,7 @@ def remove_employee():
 def add_dayoff():
     if request.method == "GET":
         id = request.args.get("id")
-        employee = restaurants.get_employee(id)
+        employee = employees.get_employee(id)
         restaurant = restaurants.get_restaurant(employee[3])
         return render_template("add_dayoff.html", employee=employee,restaurant=restaurant)
     if request.method == "POST":
@@ -230,7 +239,7 @@ def add_dayoff():
         reason = request.form["reason"]
         employeeID = request.form["employeeID"]        
         restaurantID = request.form["restaurantID"]        
-        if restaurants.add_dayoff(employeeID,date,reason):
+        if employees.add_dayoff(employeeID,date,reason):
             return redirect(url_for("restaurant", id=restaurantID))
         else:
             return render_template("error.html", message = "Vapaapäivän lisäys epäonnistui")
@@ -239,14 +248,14 @@ def add_dayoff():
 def remove_dayoff():
     if request.method == "GET":
         employeeID = request.args.get("id")
-        employee = restaurants.get_employee(employeeID)
+        employee = employees.get_employee(employeeID)
         restaurant = restaurants.get_restaurant(employee[3])
         return render_template("remove_dayoff.html",employee=employee, restaurant=restaurant)
     if request.method == "POST":
         date = request.form["date"]
         employeeID = request.form["employeeID"]        
         restaurantID = request.form["restaurantID"]        
-        if restaurants.remove_dayoff(employeeID,date):
+        if employees.remove_dayoff(employeeID,date):
             # Lisää message / parempi route vielä
             return redirect("/")
         else:

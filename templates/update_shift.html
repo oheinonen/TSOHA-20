@@ -13,6 +13,7 @@
 </script>
 {% if session.username %}
 {% if session.user_id == restaurant.owner %}
+
   <h3>Muokkaa työvuoroa {{shift.name}} {{shift.date}} </h3> 
   <form class="" action="/update/shift" method="post" onsubmit="return check(this)">
 
@@ -37,7 +38,15 @@
         Työvuoron kesto tunneissa<br>
         <input type="number" name="new_duration" min="0" max="24" value="{{shift.duration}}" required>
     </p>
-    
+    {% if shift.employeeid %}
+      <p>Haluatko poistaa vuoron työntekijältä?</p>
+      <input type="radio" name="keep_employee" value="KEEP" selected>
+      <label for="Ei">Ei</label><br>
+      <input type="radio" name="keep_employee" value="REMOVE">
+      <label for="Kyllä">Kyllä</label><br>
+    {% else %}
+      <input type="hidden" name="keep_employee" value="KEEP">
+    {% endif %}
   </p>    
   <input type="hidden" name="restaurantID" value="{{restaurant.id}}">
   <input type="hidden" name="id" value="{{shift.id}}">

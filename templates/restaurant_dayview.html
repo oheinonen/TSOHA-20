@@ -12,10 +12,10 @@
           <p>Rooli {{ shift.role}}</p> 
           <p>klo {{shift.start_time.strftime("%H:%M")}}. Kesto {{shift.duration}} tuntia</p>
           <p>
-            <a class="links" href="{{url_for('update_shift', id=shift.id, restaurantID = restaurant.id)}}"> Muokkaa tätä työvuoroa</a>
+            <a class="links" href="{{url_for('update_shift', id=shift.id, restaurantID=restaurant.id)}}"> Muokkaa tätä työvuoroa</a>
           </p>
           <p>
-            <a class="links" href="{{url_for('remove_shift', id=shift.id, restauranID= restaurant.id)}}"> Poista tämä työvuoro</a>
+            <a class="links" href="{{url_for('remove_shift', id=shift.id, restaurantID=restaurant.id)}}"> Poista tämä työvuoro</a>
           </p>
       {% endfor %}
     
