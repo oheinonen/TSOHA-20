@@ -150,11 +150,11 @@ def create_staff_strength_calendar(week,restaurantID):
     date = datetime.strptime(week + '-1', "%G-W%V-%u").strftime( "%Y-%m-%d")
     
     for i in range(7):
-        bakers =        len(get_shifts_by_date_and_role(restaurantID,date,'Leipuri'))
-        chefs =         len(get_shifts_by_date_and_role(restaurantID,date,'Kokki'))
-        waiters =       len(get_shifts_by_date_and_role(restaurantID,date,'Tarjoilija'))
-        cashiers =      len(get_shifts_by_date_and_role(restaurantID,date,'Kassahenkilö'))
-        dishwashers =   len(get_shifts_by_date_and_role(restaurantID,date,'Tiskari'))
+        roles = [[]]*5
+        i = 0
+        for role in ['Leipuri','Kokki','Tarjoilija','Kassahenkilö','Tiskari']:
+            roles[i] = len(get_shifts_by_date_and_role(restaurantID,date,role))
+            i += 1
         calendar[i] = [bakers, chefs, waiters, cashiers, dishwashers]
         modified_date = datetime.strptime(date, "%Y-%m-%d") + timedelta(days=1)
         date = modified_date.strftime( "%Y-%m-%d")

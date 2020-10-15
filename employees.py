@@ -107,9 +107,9 @@ def get_employees(id):
     sql = "SELECT id,firstname,lastname,restaurantID,role,max_hours  FROM employees WHERE restaurantID=:id AND visible=1"
     result = db.session.execute(sql, {"id":id})
     employees = result.fetchall()
-    bakers = get_employees_by_role(id,'Leipuri')
-    chefs = get_employees_by_role(id,'Kokki')
-    waiters = get_employees_by_role(id,'Tarjoilija')
-    cashiers = get_employees_by_role(id,'Kassahenkilö')
-    dishwashers = get_employees_by_role(id,'Tiskari')
-    return (employees, bakers, chefs, waiters, cashiers, dishwashers)
+    roles = [[]]*5
+    i = 0
+    for role in ['Leipuri','Kokki','Tarjoilija','Kassahenkilö','Tiskari']:
+        roles[i] = get_employees_by_role(id,role)
+        i += 1
+    return (employees, roles[0], roles[1], roles[2], roles[3], roles[4])

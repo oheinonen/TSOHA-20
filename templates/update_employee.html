@@ -32,11 +32,13 @@
     <p>
         Valitse työntekijän rooli
         <select name="new_role" id="role" required>
-            <option value="Leipuri">Leipuri</option>
-            <option value="Kokki">Kokki</option>
-            <option value="Tarjoilija">Tarjoilija</option>
-            <option value="Kassahenkilö">Kassahenkilö</option>
-            <option value="Tiskari">Tiskari</option>
+          {% for role in ['Leipuri','Kokki','Tarjoilija','Kassahenkilö','Tiskari'] %}
+            {% if employee.role == role %}
+              <option value="{{role}}" selected>{{role}}</option>
+            {% else %}
+              <option value="{{role}}">{{role}}</option>
+            {% endif %}
+          {% endfor %}
         </select>
     </p>    
 
