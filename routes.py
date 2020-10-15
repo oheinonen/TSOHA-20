@@ -48,8 +48,12 @@ def roster():
     week = request.args["week"]
     restaurantID = request.args["restaurantID"]
     restaurant = restaurants.get_restaurant(restaurantID)
-    (roster,unused_hours) = restaurants.create_roster(week,restaurant.id)
-    return render_template("roster.html", roster=roster, unused_hours=unused_hours, week=week, restaurant=restaurant)
+    (roster,unused_hours,assigned_shifts, not_assigned) = restaurants.create_roster(week,restaurant.id)
+    return render_template("roster.html", roster=roster, unused_hours=unused_hours, 
+                                                            week=week, 
+                                                            restaurant=restaurant, 
+                                                            assigned_shifts=assigned_shifts,
+                                                            not_assigned=not_assigned)
 
 @app.route("/employee/schedule")
 def personal_schedule():

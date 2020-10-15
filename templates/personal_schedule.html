@@ -5,7 +5,7 @@
   {% if session.username %}
     {% if session.user_id == restaurant.owner%}
         <div class="header2">
-            <h2>Työntekijän {{ employee.firstname }}{{ employee.lastname }} viikon {{ week }} työvuorot ravintolassa {{ restaurant.name }}</h2>
+            <h2> {{ employee.firstname }} {{ employee.lastname }} viikon {{ week }} työvuorot ravintolassa {{ restaurant.name }}</h2>
         </div>
         {% for (i,shift) in schedule %}
             {% if i == 0 %}

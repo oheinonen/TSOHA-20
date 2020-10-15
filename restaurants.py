@@ -138,6 +138,11 @@ def get_shifts_by_date_and_role(restaurantID,date,role):
     shifts = result.fetchall()
     return shifts
 
+def is_assigned(id):
+    sql = "SELECT employeeID FROM shifts WHERE id=:id"
+    result = db.session.execute(sql,{"id":id})
+    employeeID = result.fetchone()[0]
+    return employeeID
 
 # Functions related to making staff strength calendar and the roster
 
@@ -164,6 +169,9 @@ def create_staff_strength_calendar(week,restaurantID):
 def create_roster(week,restaurantID):
     date = datetime.strptime(week + '-1', "%G-W%V-%u").strftime( "%Y-%m-%d")
     roster = [[]]*7
+    assigned_shifts = []
+    not_assigned = []
+    assigned_hours = 0
     for i in range(7):
         shifts = get_shifts_by_date(restaurantID,date)
         this_day_shifts = []
@@ -172,21 +180,27 @@ def create_roster(week,restaurantID):
             all_employees = employees.get_employees_by_role(restaurantID,shift.role)
             all_employees = random.sample(all_employees, len(all_employees))
             for employee in all_employees:
-                current_shifts = get_shifts_by_employee_and_week(employee.id,restaurantID,week)
+                current_shifts = get_shifts_by_employee_and_week(restaurantID,employee.id,week)
                 hours = 0
                 for current_shift in current_shifts:
                     hours += int(current_shift.duration)
                 able_to_work = not employees.has_shift(employee.id, shift.date) and not employees.has_dayoff(employee.id,shift.date)
-                if hours + shift.duration <= employee.max_hours and able_to_work:
+                if is_assigned(shift.id)== employee.id:
+                    assigned_hours += shift.duration
+                    assigned_to = employees.get_employee(is_assigned(shift.id))                    
+                    assigned_shifts.append((shift,assigned_to))
+                if hours + shift.duration <= employee.max_hours and able_to_work and not is_assigned(shift.id):
                     if add_employee_to_shift(shift.id,employee.id):
                         this_day_shifts.append((shift,employee))
-                        break
-                    
+                        break 
+            if not is_assigned(shift.id):
+                not_assigned.append(shift)  
 
         roster[i] = this_day_shifts
         modified_date = datetime.strptime(date, "%Y-%m-%d") + timedelta(days=1)
         date = modified_date.strftime( "%Y-%m-%d")
-    return (roster,unused_hours(week,restaurantID,roster))
+    print(roster)
+    return (roster,unused_hours(week,restaurantID,roster) - assigned_hours,assigned_shifts,not_assigned)
      
 # counts unused working hours in particular restaurant and week using created roster
 def unused_hours(week,restaurantID,roster):

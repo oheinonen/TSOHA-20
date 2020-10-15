@@ -2,35 +2,73 @@
 {% block title %}Työvuorolista - {{ week }}{% endblock %}
 
 {% block body %}
+
   {% if session.username %}
     {% if session.user_id == restaurant.owner%}
-    
         <div class="header2">
-            <h2>Ravintolan {{ restaurant.name }} viikon {{ week }} työvuorot</h2>
+            <h2>{{ restaurant.name }} viikon {{ week }} työvuorot</h2>
+        </div>
+        <div class="right">
+            {% if assigned_shifts %}
+                <div class="">
+                    <h3 class="headerright">Aiemmin annetut työvuorot:</h3>
+                    <select class="as_list" >
+                        {% for (shift,employee) in assigned_shifts %}
+                            <option>{{ shift.name }} {{ shift.date }}: {{ employee.lastname }}, {{ employee.firstname }}</li>
+                        {% endfor %}
+                    </select>
+                </div>
+            {% endif %} 
+            <div>
+                <p>Viikolla käyttämättömiä tunteja {{unused_hours}}</p>
+            </div>
+            {% if not_assigned %}
+                <div class="">
+                    <h4 class="headerright">Ylijääneet työvuorot</h4>
+                    <select class="as_list" >
+                        {% for shift in not_assigned %}
+                            <option>{{ shift.name }} {{ shift.date }}</li>
+                        {% endfor %}
+                    </select>
+                </div>
+            {% endif %} 
         </div>
 
-        
         {% for i in range(7) %}
             {% if i == 0 %}
+            <div class="header2">
                 <h3>Maanantai</h3>
+            </div>
             {% elif i == 1 %}
+            <div class="header2">
                 <h3>Tiistai</h3>
+            </div>
             {% elif i == 2 %}
-            <h3>Keskiviikko</h3>
+            <div class="header2">
+                <h3>Keskiviikko</h3>
+            </div>
             {% elif i == 3 %}
+            <div class="header2">
                 <h3>Torstai</h3>
+            </div>
             {% elif i == 4 %}
+            <div class="header2">
                 <h3>Perjantai</h3>
+            </div>
             {% elif i == 5 %}
+            <div class="header2">
                 <h3>Lauantai</h3>
+            </div>
             {% elif i == 6 %}
+            <div class="header2">
                 <h3>Sunnuntai</h3>
+            </div>
             {% endif %}
-
+       
             {% for (shift,employee) in roster[i] %}
-                <h3>{{shift.name}}</h3>
-                <p>Rooli {{ shift.role}}</p> 
-                <p>Työntekijä {{ employee.firstname}} {{ employee.lastname }}</p> 
+                <h4>{{shift.name}}</h4>
+                <p>{{ employee.firstname}} {{ employee.lastname }}</p> 
+                <p>{{ shift.role}}</p> 
                 <p>klo {{shift.start_time.strftime("%H:%M")}}. Kesto {{shift.duration}} tuntia</p>
                 <p>
                 <a class="links" href="{{url_for('update_shift', id=shift.id, restaurantID=restaurant.id)}}"> Muokkaa tätä työvuoroa</a>
@@ -41,7 +79,7 @@
             {% endfor %}
 
         {% endfor %}
-        <h2>Viikolla ylimääräisiä tunteja {{unused_hours}}</h2>
+
     {% else %}
   
         <p>Voit katsoa vain oman ravintolasi työvuorolistoja.</p>

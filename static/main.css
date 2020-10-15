@@ -21,7 +21,7 @@ nav ul {
 
 body {
     margin: auto;
-    max-width: 45em;
+    max-width: 50em;
     font-family: 'Helvetica', 'Arial', sans-serif;
     color:#161925;
     background: #CBF7ED;
@@ -38,13 +38,14 @@ table {
 }
 
 td, th {
-  border: 1px solid #dddddd;
+  border: 1px solid #CBF7ED;
   text-align: left;
   padding: 8px;
 }
 
 tr:nth-child(even) {
-  background-color: #8EA8C3;
+  background-color: #23395B;
+  color:#CBF7ED ;
 }
 .links {
     color: #161925;
