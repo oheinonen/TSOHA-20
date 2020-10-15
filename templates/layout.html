@@ -17,15 +17,23 @@
     <nav>
       <ul>
         <li><a href="/">Etusivu</a></li>
-        {% if session.user_id %}
-          <li><a href="/login">Kirjaudu ulos</a></li>
+        {% if session.username %}
+          <li><a href="/logout">Kirjaudu ulos</a></li>
         {% else %}
-          <li><a href="/logout">Kirjaudu sisään</a></li>
+          <li><a href="/login">Kirjaudu sisään</a></li>
           {% endif %}
         <li><a href="/register">Rekisteröinti</a></li>
       </ul>
     </nav>
     <div class="content">
+          {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for msg in messages %}
+              <p>{{msg}}</p>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        
       {% block body %}
 
       {% endblock %}

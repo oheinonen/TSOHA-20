@@ -60,6 +60,7 @@ tr:nth-child(even) {
     color: #CBF7ED;
     max-width: 15em;
     border-radius: .5em;
+    padding: .5em;
     grid-template-columns: 5em 10em;
     grid-row-gap: .3em;
 }

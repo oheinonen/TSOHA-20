@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, request, redirect,session, url_for
+from flask import flash, render_template, request, redirect,session, url_for
 from db import db
 import users, restaurants,employees
 
@@ -7,7 +7,7 @@ import users, restaurants,employees
 def index():
     # List all restaurants currently added to the website by this user
     all_restaurants = []
-    if session:
+    if "user_id" in session:
         user = session["user_id"]
         all_restaurants = restaurants.get_all(user)
     return render_template("index.html", all_restaurants=all_restaurants)
@@ -72,6 +72,7 @@ def add_restaurant():
         owner = request.form["owner"]
         if restaurants.add_restaurant(name,owner):
             id = restaurants.get_last_by_name(name)
+            flash("Ravintolan lisäys onnistui!")
             return redirect(url_for("restaurant", id=id))
         else:
             return render_template("error.html", message = "Ravintolan lisäys epäonnistui")
@@ -86,7 +87,7 @@ def update_restaurant():
         id = request.form["id"]
         new_name = request.form["new_name"]
         if restaurants.update_restaurant(id, new_name):
-            # Lisää message / parempi route vielä
+            flash("Ravintolan päivitys onnistui!")
             return redirect(url_for('restaurant', id=id))
         else:
             return render_template("error.html", message = "Ravintolan muokkaus epäonnistui")
@@ -101,7 +102,7 @@ def remove_restaurant():
     if request.method == "POST":
         id = request.form["id"]
         if restaurants.remove_restaurant(id):
-            # Lisää message / parempi route vielä
+            flash("Ravintolan poisto onnistui!")
             return redirect("/")
         else:
             return render_template("error.html", message = "Ravintolan poisto epäonnistui")
@@ -123,6 +124,7 @@ def add_shift():
         reps = request.form["reps"]
         repetition = request.form["repetition"]
         if restaurants.add_shift(name, restaurantID, role, date, start_time, duration, reps,repetition):
+            flash("Työvuoron lisäys onnistui!")
             return redirect(url_for("restaurant", id=restaurantID))
         else:
             return render_template("error.html", message = "Työvuoron lisäys epäonnistui")
@@ -147,7 +149,7 @@ def update_shift():
         restaurantID = request.form["restaurantID"]
         keep_employee = request.form["keep_employee"]
         if restaurants.update_shift(id, new_name, new_role, new_date, new_start_time, new_duration,keep_employee):
-            # Lisää message / parempi route vielä
+            flash("Työvuoron päivitys onnistui!")
             return redirect(url_for('restaurant', id=restaurantID))
         else:
             return render_template("error.html", message = "Työvuoron muokkaus epäonnistui")
@@ -163,7 +165,7 @@ def remove_shift():
     if request.method == "POST":
         id = request.form["id"]
         if restaurants.remove_shift(id):
-            # Lisää message / parempi route vielä
+            flash("Työvuoron poisto onnistui!")
             return redirect("/")
         else:
             return render_template("error.html", message = "Työvuoron poisto epäonnistui")
@@ -183,6 +185,7 @@ def add_employee():
         max_hours = request.form["max_hours"]
 
         if employees.add_employee(firstname,lastname,restaurantID, role, max_hours):
+            flash("Työntekijän lisäys onnistui!")
             return redirect(url_for("restaurant", id=restaurantID))
         else:
             return render_template("error.html", message = "Työntekijän lisäys epäonnistui")
@@ -205,7 +208,7 @@ def update_employee():
         new_max_hours = request.form["new_max_hours"]
         restaurantID = request.form["restaurantID"]
         if employees.update_employee(id, new_firstname, new_lastname, new_role, new_max_hours):
-            # Lisää message / parempi route vielä
+            flash("Työntekijän päivitys onnistui!")
             return redirect("/")
         else:
             return render_template("error.html", message = "Työntekijän muokkaus epäonnistui")
@@ -221,7 +224,7 @@ def remove_employee():
     if request.method == "POST":
         id = request.form["id"]
         if employees.remove_employee(id):
-            # Lisää message / parempi route vielä
+            flash("Työntekijän poisto onnistui!")
             return redirect("/")
         else:
             return render_template("error.html", message = "Työntekijän poisto epäonnistui")
@@ -239,6 +242,7 @@ def add_dayoff():
         employeeID = request.form["employeeID"]        
         restaurantID = request.form["restaurantID"]        
         if employees.add_dayoff(employeeID,date,reason):
+            flash("Vapaapäivän lisääminen onnistui!")
             return redirect(url_for("restaurant", id=restaurantID))
         else:
             return render_template("error.html", message = "Vapaapäivän lisäys epäonnistui")
@@ -255,7 +259,7 @@ def remove_dayoff():
         employeeID = request.form["employeeID"]        
         restaurantID = request.form["restaurantID"]        
         if employees.remove_dayoff(employeeID,date):
-            # Lisää message / parempi route vielä
+            flash("Sisäänkirjautuminen onnistui!")
             return redirect("/")
         else:
             return render_template("error.html", message = "Vapaapäivän poisto epäonnistui")
@@ -270,6 +274,7 @@ def register():
         username = request.form["username"]
         password = request.form["password"]
         if users.register(username,password):
+            flash("Rekisteröinti onnistui!")
             return redirect("/")
         else:
             return render_template("error.html",message="Rekisteröinti ei onnistunut")
@@ -283,11 +288,15 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
         if users.login(username,password):
+            flash("Sisäänkirjautuminen onnistui!")
             return redirect("/")
         else:
             return render_template("error.html",message="Väärä tunnus tai salasana")
 
 @app.route("/logout")
 def logout():
+    if "user_id" in session:
+        users.logout()
+        flash("Uloskirjautuminen onnistui!")
     users.logout()
     return redirect("/")

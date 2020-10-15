@@ -2,10 +2,9 @@
 {% block title %}Etusivu{% endblock %}
 
 {% block body %}
+
   {% if session.username %}
   <div class="">
-
-    {% if all_restaurants %}
     <div class="header2">
       <h2>Ravintolasi</h2>
     </div>
@@ -15,18 +14,18 @@
           <h3>Haluatko lisätä uuden ravintolan?</h3>
         </div>
         <a class="linksright" href="/add/restaurant"> Lisää uusi ravintola tästä!</a>
-      </div>
+      </div> 
+    {% if all_restaurants %}
+    
       {% for restaurant in all_restaurants %}
         <h3>{{restaurant.name}}</h3>
         <a class="links" href="{{url_for('restaurant', id=restaurant.id)}}">Siirry ravintolan sivulle!</a>
       {% endfor %}
     {% else %}
     <p>Et ole vielä lisännyt yhtään ravintolaa</p>
-    <div>
-      <p>Haluatko lisätä uuden ravintolan?</p>
-      <a class="links" href="/add/restaurant"> Lisää uusi ravintola tästä!</a>
-    </div>
+    
     {% endif %}
+
   </div>
 
   {% else %}

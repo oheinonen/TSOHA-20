@@ -28,8 +28,10 @@ def login(username,password):
             return False
 
 def logout():
-    del session["user_id"]
-    del session["username"]
+    if "user_id" in session:
+        del session["user_id"]
+    if "username" in session:
+        del session["username"]
 
 def user_id():
     return session.get("user_id",0)
