@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% block title %}{{ employee.firstname }}{{ employee.lastname }}{% endblock %}
+
+{% block body %}
+  {% if session.username %}
+  {% if session.user_id == restaurant.owner %}
+
+  <h1>
+    Työntekijän {{ employee.firstname }}{{ employee.lastname }} sivu 
+  </h1>
+
+
+    <div>
+    <p>Katso työntekijän työvuorolista valitsemaltasi viikolta</p>
+    <form action="/employee/schedule" method="GET">
+        <input type="week" name="week">
+        <input type="hidden" name="restaurantID" value={{restaurant.id}}>
+        <input type="hidden" name="employeeID" value={{employee.id}}>
+        <input type="submit" value="siirry">
+    </form>
+    </div>
+
+    <p>
+    <a class="links" href="{{url_for('add_dayoff', id=employee.id)}}">Lisää vapaapäivä työntekijälle</a>
+    </p>
+    <p>
+    <a class="links" href="{{url_for('remove_dayoff', id=employee.id)}}">Poista työntekijän vapaapäivä</a>
+    </p>
+    <p>
+    <a class="links" href="{{url_for('update_employee', id=employee.id, restaurantID=restaurant.id)}}"> Muokkaa työntekijän tietoja</a>
+    </p>
+    <p>
+    <a class="links" href="{{url_for('remove_employee', id=employee.id, restaurantID=restaurant.id) }}"> Poista tämä työntekijä</a>
+    </p>
+
+    
+  {% else %}
+  
+    <p>Voit katsoa vain oman ravintolasi työtekijöiden sivuja.</p>
+
+  {% endif %}
+  {% else %}
+  
+  <p>Et ole kirjautunut sisään.</p>
+  <a class="links" href="/login">Kirjaudu sisään täältä!</a>
+
+{% endif %}
+{% endblock %}}
