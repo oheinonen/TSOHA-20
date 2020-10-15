@@ -5,85 +5,93 @@
   {% if session.username %}
   {% if session.user_id == restaurant.owner %}
 
-  <h1>
-    Ravintolan {{restaurant.name }} sivu 
-  </h1>
-
+  
   <div>
-    <p>Tutki haluamasi päivän työvuoroja:</p>
-    <form action="dayview" method="get">
-      <input type="date" name="date" min="2020-01-01" max="2025-12-31" required>
-      <input type="hidden" name="id" value={{restaurant.id}}>
-      <input type="submit" value="siirry">
-    </form>
-  </div> 
-
-  <div>
-    <p>Katso haluamasi viikon henkilöstövahvuuskalenteri</p>
-    <form action="staff_strength_calendar" method="GET">
-      <input type="week" name="week">
-      <input type="hidden" name="restaurantID" value={{restaurant.id}}>
-      <input type="submit" value="siirry">
-    </form>
-
-  </div>
-
-
-  <div>
-    <p>Tee työvuorolista valitsemallesi viikolle</p>
-    <form action="roster" method="GET">
-      <input type="week" name="week">
-      <input type="hidden" name="restaurantID" value={{restaurant.id}}>
-      <input type="submit" value="siirry">
-    </form>
-
-  </div>
-
-  <div>
-    <h2>Ravintolan työntekijät:</h2>
-
-      {% for i in range(1,6) %}
-
-      {% if i == 1 %}
-        <h3>Leipurit</h3>
-      {% elif i == 2 %}
-        <h3>Kokit</h3>
-      {% elif i == 3 %}
-       <h3>Tarjoilijat</h3>
-      {% elif i == 4 %}
-        <h3>Kassahenkilöt</h3>
-      {% elif i == 5 %}
-        <h3>Tiskarit</h3>
-      {% endif %}
-      <div>
-        <form action="/employee" method="GET">
-          <select name="id" id="">
-        {% for employee in employees[i] %}
-          <option value="{{employee.id}}">{{employee.lastname}},{{employee.firstname}}</option>
-        {% endfor %}
-        <input type="submit" value="siirry">
-        </select>
-
-      </form>
+    <div class="header2">
+      <h1>
+        {{restaurant.name }}  
+      </h1>
+    </div>
+    <div class="right">
+      <div class="headerrigth">
+        <h3>Muokkaa ravintolan tietoja</h3>
       </div>
+      <p>
+        <a class="linksright" href="{{url_for('add_shift', restaurantID=restaurant.id) }}" method="post">Lisää työvuoro ravintolalle</a>
+      </p>
+      <p>
+        <a class="linksright" href="{{url_for('add_employee', restaurantID=restaurant.id) }}" method="post">Lisää työntekijä ravintolalle</a>
+      </p>
+      <p>
+        <a class="linksright" href="{{url_for('update_restaurant', restaurantID=restaurant.id) }}"> Muokkaa tätä ravintolaa</a>
+      </p>
+      <p>
+        <a class="linksright" href="{{url_for('remove_restaurant', restaurantID=restaurant.id) }}"> Poista tämä ravintola</a>
+      </p>
+    </div>
+    <div>
+      <p>Tutki haluamasi päivän työvuoroja:</p>
+      <form action="dayview" method="get">
+        <input type="date" name="date" min="2020-01-01" max="2025-12-31" required>
+        <input type="hidden" name="id" value={{restaurant.id}}>
+        <input type="submit" id="submit_button" value="siirry">
+      </form>
+    </div> 
+
+    <div>
+      <p>Katso haluamasi viikon henkilöstövahvuuskalenteri</p>
+      <form action="staff_strength_calendar" method="GET">
+        <input type="week" name="week" required>
+        <input type="hidden" name="restaurantID" value={{restaurant.id}}>
+        <input type="submit" id="submit_button" value="siirry">
+      </form>
+
+    </div>
+
+
+    <div>
+      <p>Tee työvuorolista valitsemallesi viikolle</p>
+      <form action="roster" method="GET">
+        <input type="week" name="week" required>
+        <input type="hidden" name="restaurantID" value={{restaurant.id}}>
+        <input type="submit" id="submit_button" value="siirry">
+      </form>
+
+    </div>
+
+    <div>
+      <div class="header2">
+        <h2>Ravintolan työntekijät</h2>
+      </div>
+
+        {% for i in range(1,6) %}
+
+        {% if i == 1 %}
+          <h3>Leipurit</h3>
+        {% elif i == 2 %}
+          <h3>Kokit</h3>
+        {% elif i == 3 %}
+        <h3>Tarjoilijat</h3>
+        {% elif i == 4 %}
+          <h3>Kassahenkilöt</h3>
+        {% elif i == 5 %}
+          <h3>Tiskarit</h3>
+        {% endif %}
+        <div>
+          <form action="/employee" method="GET">
+            <select name="id" id="" required>
+          {% for employee in employees[i] %}
+            <option value="{{employee.id}}">{{employee.lastname}},{{employee.firstname}}</option>
+          {% endfor %}
+          <input type="submit" id="submit_button" value="Siirry työntekijän sivulle">
+          </select>
+
+        </form>
+        </div>
       {% endfor %}
-
-    
-
-
   </div>
-  <p>
-    <a class="links" href="{{url_for('add_shift', restaurantID=restaurant.id) }}" method="post">Lisää työvuoro ravintolalle</a>
-  </p>
-  <p>
-    <a class="links" href="{{url_for('add_employee', restaurantID=restaurant.id) }}" method="post">Lisää työntekijä ravintolalle</a>
-  </p>
-  <p>
-    <a class="links" href="{{url_for('update_restaurant', restaurantID=restaurant.id) }}"> Muokkaa tätä ravintolaa</a>
-  </p>
-  <p>
-    <a class="links" href="{{url_for('remove_restaurant', restaurantID=restaurant.id) }}"> Poista tämä ravintola</a>
-  </p>
+
+</div>
   {% else %}
   
     <p>Voit katsoa vain oman ravintolasi sivuja.</p>

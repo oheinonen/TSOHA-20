@@ -22,11 +22,13 @@
     <p>
         Valitse työvuoron tehtävä
         <select name="new_role" id="role" required>
-            <option value="Leipuri">Leipuri</option>
-            <option value="Kokki">Kokki</option>
-            <option value="Tarjoilija">Tarjoilija</option>
-            <option value="Kassahenkilö">Kassahenkilö</option>
-            <option value="Tiskari">Tiskari</option>
+          {% for role in ['Leipuri','Kokki','Tarjoilija','Kassahenkilö','Tiskari'] %}
+            {% if shift.role == role %}
+              <option value="{{role}}" selected>{{role}}</option>
+            {% else %}
+              <option value="{{role}}">{{role}}</option>
+            {% endif %}
+          {% endfor %}
         </select>
     </p>    
     <p>
@@ -40,7 +42,7 @@
     </p>
     {% if shift.employeeid %}
       <p>Haluatko poistaa vuoron työntekijältä?</p>
-      <input type="radio" name="keep_employee" value="KEEP" selected>
+      <input type="radio" name="keep_employee" value="KEEP" checked>
       <label for="Ei">Ei</label><br>
       <input type="radio" name="keep_employee" value="REMOVE">
       <label for="Kyllä">Kyllä</label><br>
@@ -50,7 +52,7 @@
   </p>    
   <input type="hidden" name="restaurantID" value="{{restaurant.id}}">
   <input type="hidden" name="id" value="{{shift.id}}">
-  <input type="submit" value="Muokkaa!">
+  <input type="submit" id="submit_button" value="Muokkaa!">
   </form>
 
   {% else %}

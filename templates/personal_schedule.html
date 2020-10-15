@@ -4,7 +4,9 @@
 {% block body %}
   {% if session.username %}
     {% if session.user_id == restaurant.owner%}
-        <h2>Työntekijän {{ employee.firstname }}{{ employee.lastname }} viikon {{ week }} työvuorot ravintolassa {{ restaurant.name }}</h2>
+        <div class="header2">
+            <h2>Työntekijän {{ employee.firstname }}{{ employee.lastname }} viikon {{ week }} työvuorot ravintolassa {{ restaurant.name }}</h2>
+        </div>
         {% for (i,shift) in schedule %}
             {% if i == 0 %}
                 <h3>Maanantai</h3>

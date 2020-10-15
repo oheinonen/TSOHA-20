@@ -3,29 +3,44 @@
 
 {% block body %}
   {% if session.username %}
-  <p> Olet kirjautunut käyttäjällä {{ session.username }}</p>
-  <a class="links" href="/add/restaurant"> Lisää uusi ravintola tästä!</a>
-  {% if session.user_id  %}
-    <h2>Ravintolasi</h2>
-    {% for restaurant in all_restaurants %}
-    <div class="">
-      <h3>{{restaurant.name}}</h3>
-      <a class="links" href="{{url_for('restaurant', id=restaurant.id)}}">Siirry ravintolan sivulle!</a>
+  <div class="">
+
+    {% if all_restaurants %}
+    <div class="header2">
+      <h2>Ravintolasi</h2>
     </div>
-    {% endfor %}
-    <a class="links" href="/logout">Kirjaudu ulos</a>
+
+    <div class="right">
+        <div class="headerrigth">
+          <h3>Haluatko lisätä uuden ravintolan?</h3>
+        </div>
+        <a class="linksright" href="/add/restaurant"> Lisää uusi ravintola tästä!</a>
+      </div>
+      {% for restaurant in all_restaurants %}
+        <h3>{{restaurant.name}}</h3>
+        <a class="links" href="{{url_for('restaurant', id=restaurant.id)}}">Siirry ravintolan sivulle!</a>
+      {% endfor %}
+    {% else %}
+    <p>Et ole vielä lisännyt yhtään ravintolaa</p>
+    <div>
+      <p>Haluatko lisätä uuden ravintolan?</p>
+      <a class="links" href="/add/restaurant"> Lisää uusi ravintola tästä!</a>
+    </div>
     {% endif %}
+  </div>
 
   {% else %}
-  
-  <form class="loginform" action="/login" method="post">
-    <p>Tunnus: <br>
-    <input type="text" name="username"></p>
-    <p> Salasana <br>
-      <input type="password" name="password"></p>
-      <input type="submit" value="Kirjaudu">
-  </form>
-
-  <p>Uusi käyttäjä? <a class="links" href="/register"> Rekisteröidy täällä!</a> </p>
+  <div>
+    <div>
+      <form class="form" action="/login" method="post">
+        <p>Tunnus: <br>
+        <input type="text" name="username"></p>
+        <p> Salasana: <br>
+          <input type="password" name="password"></p>
+          <input type="submit" id="submit_button" value="Kirjaudu">
+      </form>
+   </div>
+    <p>Uusi käyttäjä? <a class="links" href="/register"> Rekisteröidy täällä!</a> </p>
+  </div>
   {% endif %}
 {% endblock %}

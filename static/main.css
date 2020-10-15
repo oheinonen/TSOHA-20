@@ -1,7 +1,6 @@
 nav li {
-    background: #3C3C0B;
+    background: #161925;
     display: inline-block;
-    padding: 0 .5em;
     padding: .5em 1em;
     border-radius: .5em;
     margin: .2em;
@@ -9,24 +8,29 @@ nav li {
 
 nav li a {
     text-decoration: none;
-    color: #FFFFCC;
+    color: #CBF7ED;
 }
 
 nav ul {
     padding: 0;
-    background: #3C3C0B;
+    background: #161925;
     margin: .5em;
     text-align: center;
+    border-radius: .5em;
 }
 
 body {
     margin: auto;
     max-width: 45em;
     font-family: 'Helvetica', 'Arial', sans-serif;
-    color:#3C3C0B;
-    background: #FFFFCC;
+    color:#161925;
+    background: #CBF7ED;
+    border-radius: .5em;
 }
-
+div {
+    padding: .5em;
+    border-radius: .5em;
+}
 table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
@@ -40,29 +44,62 @@ td, th {
 }
 
 tr:nth-child(even) {
-  background-color: #FEFE65;
+  background-color: #8EA8C3;
 }
-
 .links {
-    color: #3C3C0B;
-
+    color: #161925;
 }
-.loginform {
-    background: #FEFE65;
+.linksright {
+    color:white;
+}
+
+.form {
+    background: #161925;
     display: block;
     float: right;
-    color: #3C3C0B;
+    color: #CBF7ED;
+    max-width: 15em;
+    border-radius: .5em;
+    grid-template-columns: 5em 10em;
+    grid-row-gap: .3em;
 }
 
 .content {
-    background:#FFFFFF;
+    background:#8EA8C3;
+    border-radius: .5em;
     display: block;
+    overflow: auto;
 }
 
 .header {
-    background:#FEFE65;
+    background:#23395B;
     font-weight: bold;
-    color: #3C3C0B;
+    color: #CBF7ED;
     padding: 2em 1em;
     font-size: 2em;
+}
+.header2 {
+    background:#23395B;
+    font-weight: bold;
+    color: #CBF7ED;
+}
+
+.headerrigth {
+    font-weight: bold;
+    color: #CBF7ED;
+}
+
+.right {
+    background: #161925;
+    display: block;
+    float: right;
+    padding: .5em;
+    border-radius: .5em;
+    color: #CBF7ED;
+}
+form #submit_button {
+    border-color: #CBF7ED;
+    text-align: center;
+    color: #CBF7ED;
+    background: #23395B;
 }

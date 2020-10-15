@@ -25,7 +25,6 @@ def employee():
     id = request.args["id"]
     employee = employees.get_employee(id)
     restaurant = restaurants.get_restaurant(employee[3])
-    print(employee,restaurant)
     return render_template("employee.html",employee=employee,restaurant=restaurant)
 
 @app.route("/restaurant/dayview")

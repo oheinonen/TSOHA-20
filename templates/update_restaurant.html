@@ -13,13 +13,13 @@
 </script>
 {% if session.username %}
   {% if session.user_id == restaurant.owner %}
-    <h3>Muokkaa ravintolaa {{name}}</h3>
+    <h3>Muokkaa ravintolaa {{restaurant.name}}</h3>
     <form class="" action="/update/restaurant" method="post" onsubmit="return check(this)">
       <p>Ravintolan uusi nimi: <br>
-      <input type="text" name="new_name" value="{{name}}" required></p>
+      <input type="text" name="new_name" value="{{restaurant.name}}" required></p>
 
-      <input type="hidden" name="id" value={{id}}>
-      <input type="submit" value="Muokkaa!">
+      <input type="hidden" name="id" value={{restaurant.id}}>
+      <input type="submit" id="submit_button" value="Muokkaa!">
     </form>
 
     <a class="links" href="/">Peruuta</a>

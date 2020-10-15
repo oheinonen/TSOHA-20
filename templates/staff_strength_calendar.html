@@ -4,8 +4,9 @@
 {% block body %}
   {% if session.username %}
   {% if session.user_id == restaurant.owner%}
-
-    <h2>Ravintolan {{ restaurant.name }} viikon {{ week }} henkilöstövahvuuskalenteri</h2>
+    <div class="header2">
+      <h2>Ravintolan {{ restaurant.name }} viikon {{ week }} henkilöstövahvuuskalenteri</h2>
+    </div>
 
     <table>
         <tr>
@@ -70,7 +71,16 @@
             <td>{{calendar[6][4]}}</td>
         </tr>
     </table>
-
+    <div>
+        <p>Haluatko luoda työvuorolistan tälle viikolle</p>
+        <form action="roster" method="GET">
+          <input type="hidden" name="week" value="{{week}}">
+          <input type="hidden" name="restaurantID" value={{restaurant.id}}>
+          <input type="submit" id="submit_button" value="Luo työvuorolista!">
+        </form>
+    
+      </div>
+    
     {% else %}
   
         <p>Voit katsoa vain oman ravintolasi työvuorolistoja.</p>

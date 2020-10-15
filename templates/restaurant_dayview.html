@@ -5,7 +5,10 @@
   {% if session.username %}
   {% if session.user_id == restaurant.owner %}
     {% if shifts %}
-      Ravintolan {{ restaurant.name }} päivän {{ date }} työvuorot:
+      <div class="header2">
+        <h2>Ravintolan {{ restaurant.name }} päivän {{ date }} työvuorot</h2>
+      </div>
+      
 
       {% for shift in shifts %}
           <h3>{{shift.name}}</h3>
@@ -28,7 +31,7 @@
       <form action="dayview" method="get">
         <input type="date" name="date" min="2020-01-01" max="2025-12-31" required>
         <input type="hidden" name="id" value={{restaurant.id}}>
-        <input type="submit" value="siirry">
+        <input type="submit" id="submit_button" value="siirry">
       </form>
     </div> 
 

@@ -78,7 +78,6 @@ def update_shift(id, name, role, date, start_time, duration,keep_employee):
         sql = "UPDATE shifts SET name=:name, role=:role, date=:date, start_time=:start_time, duration=:duration WHERE id=:id"
         db.session.execute(sql, {"name":name, "role":role, "date":date, "start_time":start_time, "duration":duration, "id":id})
         db.session.commit()
-        print(keep_employee)
         if str(keep_employee)=="REMOVE":
             sql = "UPDATE shifts SET employeeID=NULL WHERE id=:id"
             db.session.execute(sql,{"id":id})
@@ -151,11 +150,11 @@ def create_staff_strength_calendar(week,restaurantID):
     
     for i in range(7):
         roles = [[]]*5
-        i = 0
+        j = 0
         for role in ['Leipuri','Kokki','Tarjoilija','Kassahenkilö','Tiskari']:
-            roles[i] = len(get_shifts_by_date_and_role(restaurantID,date,role))
-            i += 1
-        calendar[i] = [bakers, chefs, waiters, cashiers, dishwashers]
+            roles[j] = len(get_shifts_by_date_and_role(restaurantID,date,role))
+            j += 1
+        calendar[i] = [roles[0], roles[1], roles[2], roles[3], roles[4]]
         modified_date = datetime.strptime(date, "%Y-%m-%d") + timedelta(days=1)
         date = modified_date.strftime( "%Y-%m-%d")
     
@@ -170,9 +169,9 @@ def create_roster(week,restaurantID):
         this_day_shifts = []
         for shift in shifts:
              # employees are shuffled to create randomness in picking employee
-            employees = employees.get_employees_by_role(restaurantID,shift.role)
-            employees = random.sample(employees, len(employees))
-            for employee in employees:
+            all_employees = employees.get_employees_by_role(restaurantID,shift.role)
+            all_employees = random.sample(all_employees, len(all_employees))
+            for employee in all_employees:
                 current_shifts = get_shifts_by_employee_and_week(employee.id,restaurantID,week)
                 hours = 0
                 for current_shift in current_shifts:
@@ -192,9 +191,9 @@ def create_roster(week,restaurantID):
 # counts unused working hours in particular restaurant and week using created roster
 def unused_hours(week,restaurantID,roster):
     hours = 0
-    employees = employees.get_employees(restaurantID)[0]
+    all_employees = employees.get_employees(restaurantID)[0]
     date = datetime.strptime(week + '-1', "%G-W%V-%u").strftime( "%Y-%m-%d")
-    for employee in employees:
+    for employee in all_employees:
         hours += employee[5]
     roster_hours = 0
     for day in roster:

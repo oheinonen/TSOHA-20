@@ -1,37 +1,51 @@
 {% extends "layout.html" %}
-{% block title %}{{ employee.firstname }}{{ employee.lastname }}{% endblock %}
+{% block title %}{{ employee.firstname }} {{ employee.lastname }}{% endblock %}
 
 {% block body %}
   {% if session.username %}
   {% if session.user_id == restaurant.owner %}
+  <div class="header2">
+    <h2>
+       {{ employee.firstname }} {{ employee.lastname }}  
+    </h2>
+  </div>
 
-  <h1>
-    Työntekijän {{ employee.firstname }}{{ employee.lastname }} sivu 
-  </h1>
-
-
+  <div class="right">
+    <div class="headerrigth">
+      <h3>Muokkaa työntekijän tietoja</h3>
+    </div>
+    <p>
+      <a class="linksright" href="{{url_for('add_dayoff', id=employee.id)}}">Lisää vapaapäivä työntekijälle</a>
+      </p>
+      <p>
+      <a class="linksright" href="{{url_for('remove_dayoff', id=employee.id)}}">Poista työntekijän vapaapäivä</a>
+      </p>
+      <p>
+      <a class="linksright" href="{{url_for('update_employee', id=employee.id, restaurantID=restaurant.id)}}"> Muokkaa työntekijän tietoja</a>
+      </p>
+      <p>
+      <a class="linksright" href="{{url_for('remove_employee', id=employee.id, restaurantID=restaurant.id) }}"> Poista tämä työntekijä</a>
+      </p>
+  </div>
+  <div>
+    <p>
+      Rooli - {{employee.role}}
+    </p>
+    <p>
+      Maksimitunnit viikkoa kohden - {{employee.max_hours}}
+    </p>
+  </div>
     <div>
     <p>Katso työntekijän työvuorolista valitsemaltasi viikolta</p>
     <form action="/employee/schedule" method="GET">
-        <input type="week" name="week">
+        <input type="week" name="week" required>
         <input type="hidden" name="restaurantID" value={{restaurant.id}}>
         <input type="hidden" name="employeeID" value={{employee.id}}>
-        <input type="submit" value="siirry">
+        <input type="submit" id="submit_button" value="siirry">
     </form>
     </div>
 
-    <p>
-    <a class="links" href="{{url_for('add_dayoff', id=employee.id)}}">Lisää vapaapäivä työntekijälle</a>
-    </p>
-    <p>
-    <a class="links" href="{{url_for('remove_dayoff', id=employee.id)}}">Poista työntekijän vapaapäivä</a>
-    </p>
-    <p>
-    <a class="links" href="{{url_for('update_employee', id=employee.id, restaurantID=restaurant.id)}}"> Muokkaa työntekijän tietoja</a>
-    </p>
-    <p>
-    <a class="links" href="{{url_for('remove_employee', id=employee.id, restaurantID=restaurant.id) }}"> Poista tämä työntekijä</a>
-    </p>
+    
 
     
   {% else %}
