@@ -11,6 +11,8 @@ Järjestelmä luo työvuoroista henkilöstövahvuuskalenterin, joka näyttää t
 
 [Sovellusta pääsee testaamaan täältä](https://tsoha-rostermaker.herokuapp.com)
 
+Käyttäjälle test (salasana test123) on luotu kolme ravintolaa, Ravintola 3:lle on luotu 25 työntekijää sekä 70 työvuoroa viikon 43 päiville. 
+
 + Käyttäjä voi rekisteröityä sekä kirjautua sovellukseen
 + Käyttäjä voi luoda ravintolan omalle käyttäjälleen
 + Käyttäjä voi lisätä ravintolalleen työntekijöitä 
