@@ -36,13 +36,22 @@
     </p>
   </div>
     <div>
-    <p>Katso työntekijän työvuorolista valitsemaltasi viikolta</p>
-    <form action="/employee/schedule" method="GET">
-        <input type="week" name="week" required>
-        <input type="hidden" name="restaurantID" value={{restaurant.id}}>
-        <input type="hidden" name="employeeID" value={{employee.id}}>
-        <input type="submit" id="submit_button" value="siirry">
-    </form>
+      <p>Katso työntekijän työvuorolista valitsemaltasi viikolta</p>
+      <form action="/employee/schedule" method="GET">
+          <input type="week" name="week" required>
+          <input type="hidden" name="restaurantID" value={{restaurant.id}}>
+          <input type="hidden" name="employeeID" value={{employee.id}}>
+          <input type="submit" id="submit_button" value="siirry">
+      </form>
+    </div>
+    <div>
+      <p>Katso työntekijän työraportti valitsemaltasi viikolta</p>
+      <form action="/employee/workreport" method="GET">
+          <input type="week" name="week" required>
+          <input type="hidden" name="restaurantID" value={{restaurant.id}}>
+          <input type="hidden" name="employeeID" value={{employee.id}}>
+          <input type="submit" id="submit_button" value="siirry">
+      </form>
     </div>
 
     

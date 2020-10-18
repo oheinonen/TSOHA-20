@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block title %}Työvuorolista - {{ week }}{% endblock %}
+
+{% block body %}
+  {% if session.username %}
+    {% if session.user_id == restaurant.owner%}
+        <div class="header2">
+            <h2> {{ employee.firstname }} {{ employee.lastname }} viikon {{ week }} työraportti</h2>
+        </div>
+        <div class="right">
+            <div class="headerrigth">
+                <h3>Katso toisen viikon työraportti</h3>
+            </div>
+            <div>
+                <form action="/employee/workreport" method="GET">
+                    <input type="week" name="week" required>
+                    <input type="hidden" name="restaurantID" value={{restaurant.id}}>
+                    <input type="hidden" name="employeeID" value={{employee.id}}>
+                    <input type="submit" id="submit_button" value="siirry">
+                </form>
+            </div>
+        </div>
+        <div>
+            <p>
+                Viikon työtunnit {{ hours }} 
+            </p>
+        </div>
+        
+    {% else %}
+  
+        <p>Voit katsoa vain oman ravintolasi työntekijöiden raportteja.</p>
+    
+    {% endif %}
+  {% else %}
+  
+    <p>Et ole kirjautunut sisään.</p>
+    <a href="/login">Kirjaudu sisään täältä!</a>
+
+  {% endif %}
+{% endblock %}

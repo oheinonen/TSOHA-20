@@ -8,7 +8,7 @@ nav li {
 
 nav li a {
     text-decoration: none;
-    color: #CBF7ED;
+    color: white;
 }
 
 nav ul {
@@ -24,7 +24,7 @@ body {
     max-width: 50em;
     font-family: 'Helvetica', 'Arial', sans-serif;
     color:#161925;
-    background: #CBF7ED;
+    background: white;
     border-radius: .5em;
 }
 div {
@@ -38,14 +38,14 @@ table {
 }
 
 td, th {
-  border: 1px solid #CBF7ED;
+  border: 1px solid white;
   text-align: left;
   padding: 8px;
 }
 
 tr:nth-child(even) {
   background-color: #23395B;
-  color:#CBF7ED ;
+  color: white ;
 }
 .links {
     color: #161925;
@@ -58,7 +58,7 @@ tr:nth-child(even) {
     background: #161925;
     display: block;
     float: right;
-    color: #CBF7ED;
+    color: white;
     max-width: 15em;
     border-radius: .5em;
     padding: .5em;
@@ -88,7 +88,7 @@ tr:nth-child(even) {
 
 .headerrigth {
     font-weight: bold;
-    color: #CBF7ED;
+    color: white;
 }
 
 .right {
@@ -100,8 +100,8 @@ tr:nth-child(even) {
     color: #CBF7ED;
 }
 form #submit_button {
-    border-color: #CBF7ED;
+    border-color: white;
     text-align: center;
-    color: #CBF7ED;
+    color: white;
     background: #23395B;
 }

@@ -6,8 +6,10 @@ import restaurants
 
 def add_employee(firstname,lastname,restaurantID, role, max_hours):
     try:
-        sql = "INSERT INTO employees (firstname,lastname,restaurantID, role, max_hours) VALUES (:firstname,:lastname,:restaurantID, :role, :max_hours)"
-        db.session.execute(sql, {"firstname":firstname,"lastname":lastname,"restaurantID":restaurantID, "role":role, "max_hours":max_hours})
+        sql = "INSERT INTO employees (firstname,lastname,restaurantID, role, max_hours) \
+               VALUES (:firstname,:lastname,:restaurantID, :role, :max_hours)"
+        db.session.execute(sql, {"firstname":firstname,"lastname":lastname,"restaurantID":restaurantID,
+                                 "role":role, "max_hours":max_hours})
         db.session.commit()
     except:
         return False
@@ -38,7 +40,8 @@ def get_employee(id):
     return employee
 
 def get_employees_by_role(id,role):
-    sql = "SELECT id,firstname,lastname,restaurantID,role,max_hours FROM employees WHERE restaurantID=:id AND visible=1 AND role=:role"
+    sql = "SELECT id,firstname,lastname,restaurantID,role,max_hours \
+           FROM employees WHERE restaurantID=:id AND visible=1 AND role=:role"
     result = db.session.execute(sql, {"id":id, "role":role})
     employees = result.fetchall()
     return employees
@@ -75,7 +78,7 @@ def has_dayoff(employeeID,date):
 
 
 def has_shift(employeeID,date):
-    sql = "SELECT id,name,restaurantID,employeeID,role,date,start_time,duration FROM shifts WHERE employeeID=:employeeID AND date=:date"
+    sql = "SELECT COUNT(*) FROM shifts WHERE employeeID=:employeeID AND date=:date"
     result = db.session.execute(sql, {"employeeID":employeeID, "date":date})
     shift = result.fetchone()
     return shift 
@@ -96,6 +99,13 @@ def own_shifts(employeeID,week):
         date = modified_date.strftime( "%Y-%m-%d")
     return schedule
 
+def work_report(restaurantID,employeeID,week):
+    shifts = restaurants.get_shifts_by_employee_and_week(restaurantID,employeeID,week)
+    hours = 0
+    for shift in shifts:
+        hours += shift.duration
+    return hours
+
 # Returns employees in this restaurant in a tuple where:
 # 1st element: all employees
 # 2nd element: all bakers
@@ -104,7 +114,7 @@ def own_shifts(employeeID,week):
 # 5th element: all cashiers
 # 6th element: all dishwashers
 def get_employees(id):
-    sql = "SELECT id,firstname,lastname,restaurantID,role,max_hours  FROM employees WHERE restaurantID=:id AND visible=1"
+    sql = "SELECT id,firstname,lastname,restaurantID,role,max_hours FROM employees WHERE restaurantID=:id AND visible=1"
     result = db.session.execute(sql, {"id":id})
     employees = result.fetchall()
     roles = [[]]*5

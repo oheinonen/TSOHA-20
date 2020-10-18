@@ -44,7 +44,7 @@ def get_all(owner):
     restaurants = result.fetchall()
     return restaurants
 
-def get_last_by_name(name):
+def get_last(name):
     sql = "SELECT id  FROM restaurants WHERE name=:name ORDER BY id DESC LIMIT 1"
     result = db.session.execute(sql, {"name":name})
     id = result.fetchone()[0]
@@ -58,14 +58,18 @@ def add_shift(name, restaurantID, role, date, start_time, duration, reps, repeti
         for i in range(int(reps)+1):
             if str(repetition) == "daily":
                 for j in range(8):
-                    sql = "INSERT INTO shifts (name, restaurantID, role, date, start_time, duration) VALUES (:name, :restaurantID, :role, :date, :start_time, :duration)"
-                    db.session.execute(sql, {"name":name, "restaurantID":restaurantID, "role":role, "date":date_to_add, "start_time":start_time, "duration":duration})
+                    sql = "INSERT INTO shifts (name, restaurantID, role, date, start_time, duration) \
+                           VALUES (:name, :restaurantID, :role, :date, :start_time, :duration)"
+                    db.session.execute(sql, {"name":name, "restaurantID":restaurantID, "role":role,
+                                             "date":date_to_add, "start_time":start_time, "duration":duration})
                     db.session.commit()
                     modified_date = datetime.strptime(date_to_add, "%Y-%m-%d") + timedelta(days=1)
                     date_to_add = modified_date.strftime( "%Y-%m-%d")
             else:
-                sql = "INSERT INTO shifts (name, restaurantID, role, date, start_time, duration) VALUES (:name, :restaurantID, :role, :date, :start_time, :duration)"
-                db.session.execute(sql, {"name":name, "restaurantID":restaurantID, "role":role, "date":date_to_add, "start_time":start_time, "duration":duration})
+                sql = "INSERT INTO shifts (name, restaurantID, role, date, start_time, duration) \
+                       VALUES (:name, :restaurantID, :role, :date, :start_time, :duration)"
+                db.session.execute(sql, {"name":name, "restaurantID":restaurantID, "role":role, "date":date_to_add, 
+                                        "start_time":start_time, "duration":duration})
                 db.session.commit()
                 modified_date = datetime.strptime(date_to_add, "%Y-%m-%d") + timedelta(days=7)
                 date_to_add = modified_date.strftime( "%Y-%m-%d")
@@ -96,7 +100,7 @@ def remove_shift(id):
     return True
 
 
-def add_employee_to_shift(shiftID,employeeID):
+def assign__shift(shiftID,employeeID):
     try:
         sql = "UPDATE shifts SET employeeID=:employeeID WHERE id=:shiftID"
         db.session.execute( sql, {"employeeID":employeeID, "shiftID":shiftID})
@@ -112,13 +116,15 @@ def get_shift(id):
     return shift
 
 def get_shifts(restaurantID):
-    sql = "SELECT id,name,restaurantID,employeeID,role,date,start_time,duration FROM shifts WHERE restaurantID=:restaurantID AND visible=1"
+    sql = "SELECT id,name,restaurantID,employeeID,role,date,start_time,duration \
+           FROM shifts WHERE restaurantID=:restaurantID AND visible=1"
     result = db.session.execute(sql, {"restaurantID":restaurantID})
     shifts = result.fetchall()
     return shifts
 
 def get_shifts_by_date(restaurantID,date): 
-    sql = "SELECT id,name,restaurantID,employeeID,role,date,start_time,duration FROM shifts WHERE date=:date AND restaurantID=:restaurantID AND visible=1"
+    sql = "SELECT id,name,restaurantID,employeeID,role,date,start_time,duration \
+           FROM shifts WHERE date=:date AND restaurantID=:restaurantID AND visible=1"
     result = db.session.execute(sql, {"date":date, "restaurantID":restaurantID})
     shifts = result.fetchall()
     return shifts
@@ -127,13 +133,15 @@ def get_shifts_by_employee_and_week(restaurantID,employeeID,week):
     start_date = datetime.strptime(week + '-1', "%G-W%V-%u").strftime( "%Y-%m-%d")
     modified_date = datetime.strptime(start_date, "%Y-%m-%d") + timedelta(days=7)
     end_date = modified_date.strftime( "%Y-%m-%d")
-    sql = "SELECT id,name,restaurantID,employeeID,role,date,start_time,duration FROM shifts WHERE employeeID=:employeeID AND restaurantID=:restaurantID AND visible=1 AND date BETWEEN :start_date AND :end_date"
+    sql = "SELECT id,name,restaurantID,employeeID,role,date,start_time,duration FROM shifts \
+           WHERE employeeID=:employeeID AND restaurantID=:restaurantID AND visible=1 AND date BETWEEN :start_date AND :end_date"
     result = db.session.execute(sql, {"employeeID":employeeID, "restaurantID":restaurantID, "start_date":start_date, "end_date":end_date})
     shifts = result.fetchall()
     return shifts
 
 def get_shifts_by_date_and_role(restaurantID,date,role): 
-    sql = "SELECT id,name,restaurantID,employeeID,role,date,start_time,duration FROM shifts WHERE date=:date AND restaurantID=:restaurantID AND role=:role AND visible=1"
+    sql = "SELECT id,name,restaurantID,employeeID,role,date,start_time,duration \
+           FROM shifts WHERE date=:date AND restaurantID=:restaurantID AND role=:role AND visible=1"
     result = db.session.execute(sql, {"date":date, "restaurantID":restaurantID, "role":role})
     shifts = result.fetchall()
     return shifts
@@ -177,22 +185,25 @@ def create_roster(week,restaurantID):
         this_day_shifts = []
         for shift in shifts:
              # employees are shuffled to create randomness in picking employee
-            all_employees = employees.get_employees_by_role(restaurantID,shift.role)
-            all_employees = random.sample(all_employees, len(all_employees))
-            for employee in all_employees:
+            fit_employees = employees.get_employees_by_role(restaurantID,shift.role)
+            fit_employees = random.sample(fit_employees, len(fit_employees))
+            for employee in fit_employees:
                 current_shifts = get_shifts_by_employee_and_week(restaurantID,employee.id,week)
                 hours = 0
                 for current_shift in current_shifts:
                     hours += int(current_shift.duration)
                 able_to_work = not employees.has_shift(employee.id, shift.date) and not employees.has_dayoff(employee.id,shift.date)
+                # If employee is already assigned to this shift, information is salvaged so it can be shown to user.
                 if is_assigned(shift.id)== employee.id:
                     assigned_hours += shift.duration
                     assigned_to = employees.get_employee(is_assigned(shift.id))                    
                     assigned_shifts.append((shift,assigned_to))
                 if hours + shift.duration <= employee.max_hours and able_to_work and not is_assigned(shift.id):
-                    if add_employee_to_shift(shift.id,employee.id):
+                    # If shift is successfully assigned, move to next shift
+                    if assign__shift(shift.id,employee.id):
                         this_day_shifts.append((shift,employee))
                         break 
+            # If shift is not successfully assigned, information is salvaged so it can be shown to user.
             if not is_assigned(shift.id):
                 not_assigned.append(shift)  
 
@@ -200,7 +211,7 @@ def create_roster(week,restaurantID):
         modified_date = datetime.strptime(date, "%Y-%m-%d") + timedelta(days=1)
         date = modified_date.strftime( "%Y-%m-%d")
     print(roster)
-    return (roster,unused_hours(week,restaurantID,roster) - assigned_hours,assigned_shifts,not_assigned)
+    return (roster,max(unused_hours(week,restaurantID,roster) - assigned_hours,0),assigned_shifts,not_assigned)
      
 # counts unused working hours in particular restaurant and week using created roster
 def unused_hours(week,restaurantID,roster):

@@ -65,6 +65,19 @@ def personal_schedule():
     schedule = employees.own_shifts(employeeID,week)
     return render_template("personal_schedule.html", schedule=schedule, week=week, employee=employee,restaurant=restaurant)
 
+
+@app.route("/employee/workreport")
+def work_report():
+    week = request.args["week"]
+    employeeID = request.args["employeeID"]
+    restaurantID = request.args["restaurantID"]
+    restaurant = restaurants.get_restaurant(restaurantID)
+    employee = employees.get_employee(employeeID)
+    hours = employees.work_report(restaurantID,employeeID,week)
+    return render_template("workreport.html", hours=hours, week=week, employee=employee, restaurant=restaurant)
+
+
+
 # Routes for forms
 
 @app.route("/add/restaurant",methods=["GET","POST"])
@@ -75,11 +88,11 @@ def add_restaurant():
         name = request.form["name"]
         owner = request.form["owner"]
         if restaurants.add_restaurant(name,owner):
-            id = restaurants.get_last_by_name(name)
+            id = restaurants.get_last(name)
             flash("Ravintolan lisäys onnistui!")
             return redirect(url_for("restaurant", id=id))
         else:
-            return render_template("error.html", message = "Ravintolan lisäys epäonnistui")
+            return render_template("error.html", message="Ravintolan lisäys epäonnistui")
 
 @app.route("/update/restaurant", methods=["GET","POST"])
 def update_restaurant():
@@ -94,7 +107,7 @@ def update_restaurant():
             flash("Ravintolan päivitys onnistui!")
             return redirect(url_for('restaurant', id=id))
         else:
-            return render_template("error.html", message = "Ravintolan muokkaus epäonnistui")
+            return render_template("error.html", message="Ravintolan muokkaus epäonnistui")
 
 
 @app.route("/remove/restaurant", methods=["GET", "POST"])
@@ -109,7 +122,7 @@ def remove_restaurant():
             flash("Ravintolan poisto onnistui!")
             return redirect("/")
         else:
-            return render_template("error.html", message = "Ravintolan poisto epäonnistui")
+            return render_template("error.html", message="Ravintolan poisto epäonnistui")
 
 @app.route("/restaurant/add/shift",methods=["GET","POST"])
 def add_shift():
@@ -131,7 +144,7 @@ def add_shift():
             flash("Työvuoron lisäys onnistui!")
             return redirect(url_for("restaurant", id=restaurantID))
         else:
-            return render_template("error.html", message = "Työvuoron lisäys epäonnistui")
+            return render_template("error.html", message="Työvuoron lisäys epäonnistui")
 
 
 @app.route("/update/shift", methods=["GET","POST"])
@@ -156,7 +169,7 @@ def update_shift():
             flash("Työvuoron päivitys onnistui!")
             return redirect(url_for('restaurant', id=restaurantID))
         else:
-            return render_template("error.html", message = "Työvuoron muokkaus epäonnistui")
+            return render_template("error.html", message="Työvuoron muokkaus epäonnistui")
 
 @app.route("/remove/shift", methods=["GET", "POST"])
 def remove_shift():
@@ -172,7 +185,7 @@ def remove_shift():
             flash("Työvuoron poisto onnistui!")
             return redirect("/")
         else:
-            return render_template("error.html", message = "Työvuoron poisto epäonnistui")
+            return render_template("error.html", message="Työvuoron poisto epäonnistui")
 
 @app.route("/restaurant/add/employee",methods=["GET","POST"])
 def add_employee():
@@ -192,7 +205,7 @@ def add_employee():
             flash("Työntekijän lisäys onnistui!")
             return redirect(url_for("restaurant", id=restaurantID))
         else:
-            return render_template("error.html", message = "Työntekijän lisäys epäonnistui")
+            return render_template("error.html", message="Työntekijän lisäys epäonnistui")
 
 
 @app.route("/update/employee", methods=["GET","POST"])
@@ -215,7 +228,7 @@ def update_employee():
             flash("Työntekijän päivitys onnistui!")
             return redirect("/")
         else:
-            return render_template("error.html", message = "Työntekijän muokkaus epäonnistui")
+            return render_template("error.html", message="Työntekijän muokkaus epäonnistui")
 
 @app.route("/remove/employee", methods=["GET", "POST"])
 def remove_employee():
@@ -231,7 +244,7 @@ def remove_employee():
             flash("Työntekijän poisto onnistui!")
             return redirect("/")
         else:
-            return render_template("error.html", message = "Työntekijän poisto epäonnistui")
+            return render_template("error.html", message="Työntekijän poisto epäonnistui")
 
 @app.route("/add/dayoff", methods=["GET", "POST"])
 def add_dayoff():
@@ -249,7 +262,7 @@ def add_dayoff():
             flash("Vapaapäivän lisääminen onnistui!")
             return redirect(url_for("restaurant", id=restaurantID))
         else:
-            return render_template("error.html", message = "Vapaapäivän lisäys epäonnistui")
+            return render_template("error.html", message="Vapaapäivän lisäys epäonnistui")
 
 @app.route("/remove/dayoff", methods=["GET", "POST"])
 def remove_dayoff():
@@ -266,7 +279,7 @@ def remove_dayoff():
             flash("Sisäänkirjautuminen onnistui!")
             return redirect("/")
         else:
-            return render_template("error.html", message = "Vapaapäivän poisto epäonnistui")
+            return render_template("error.html", message="Vapaapäivän poisto epäonnistui")
 
 # Register/login/logout 
 
